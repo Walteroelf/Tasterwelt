@@ -1,8 +1,8 @@
 /*
-  Tasterwelt – Ursache-Wirkung mit dem Taster.
+  Tasterwelt – Ursache und Wirkung mit dem Taster.
 
   Hier: Einstellungen laden/speichern, Startseite aufbauen, Übungen starten
-  und beenden, Erinnerung und Druck-Anzeige. Die Bausteine selbst stehen in
+  und beenden, Erinnerung und Druck-Anzeige. Die Bausteine stehen in
   story.js, reveal.js, build.js und effect.js; die Tasterabfrage in switch.js.
 
   Jeder Baustein liefert ein Objekt mit start(stage), press(), release(), stop().
@@ -18,6 +18,8 @@ const DEFAULT_SETTINGS = {
   lockMs: 600,
   reminder: 0,
   pressDot: true,
+  theme: "nacht",
+  showText: true,
   speech: true,
   rate: "0.85",
   sounds: true,
@@ -50,7 +52,6 @@ function saveSettings() {
 const homeScreen = document.getElementById("homeScreen");
 const playScreen = document.getElementById("playScreen");
 const stage = document.getElementById("stage");
-const playTitle = document.getElementById("playTitle");
 const reminder = document.getElementById("reminder");
 const pressDot = document.getElementById("pressDot");
 
@@ -91,6 +92,12 @@ function pagesNote(collection) {
   return n === 1 ? "1 Seite" : n + " Seiten";
 }
 
+/* Erstes Bild einer Sammlung – für die Vorschau */
+function coverPage(collection, offset = 0) {
+  const withPicture = collection.pages.filter(hasPicture);
+  return withPicture[Math.min(offset, withPicture.length - 1)] || collection.pages[0];
+}
+
 async function renderHome() {
   ownCollections = await getOwnCollections();
   const collections = allCollections().filter(c => c.pages.length > 0);
@@ -103,23 +110,25 @@ async function renderHome() {
 
   collections.forEach(collection => {
     storyCards.appendChild(makeCard({
-      thumbPage: collection.pages[0],
+      thumbPage: coverPage(collection),
       title: collection.name,
       note: pagesNote(collection),
       onClick: () => startGame(createStoryGame(collection))
     }));
 
-    revealCards.appendChild(makeCard({
-      thumbPage: collection.pages[collection.pages.length > 1 ? 1 : 0],
-      title: collection.name,
-      note: pagesNote(collection),
-      onClick: () => startGame(createRevealGame(collection))
-    }));
+    if (collection.pages.some(p => hasPicture(p) || p.video)) {
+      revealCards.appendChild(makeCard({
+        thumbPage: coverPage(collection, 2),
+        title: collection.name,
+        note: pagesNote(collection),
+        onClick: () => startGame(createRevealGame(collection))
+      }));
+    }
   });
 
   BUILD_VARIANTS.forEach(variant => {
     buildCards.appendChild(makeCard({
-      thumbPage: { emoji: variant.emoji, bg: "#e8f1f6" },
+      thumbPage: { svg: variant.svg },
       title: variant.name,
       note: variant.note,
       onClick: () => startGame(createBuildGame(variant.id))
@@ -128,7 +137,7 @@ async function renderHome() {
 
   EFFECT_VARIANTS.forEach(variant => {
     effectCards.appendChild(makeCard({
-      thumbPage: { emoji: variant.emoji, bg: variant.id === "feuerwerk" || variant.id === "licht" ? "#1d2b53" : "#e8f1f6" },
+      thumbPage: { svg: variant.svg },
       title: variant.name,
       note: variant.note,
       onClick: () => startGame(createEffectGame(variant.id))
@@ -137,7 +146,7 @@ async function renderHome() {
 
   collections.forEach(collection => {
     effectCards.appendChild(makeCard({
-      thumbPage: { emoji: "🎁", bg: "#fff1c1" },
+      thumbPage: coverPage(collection, 1),
       title: "Überraschung",
       note: collection.name + " – zufällige Bilder",
       onClick: () => startGame(createEffectGame("ueberraschung", collection))
@@ -154,18 +163,18 @@ function renderOwnList() {
   allCollections().forEach(collection => {
     const row = document.createElement("div");
     row.className = "own-row";
-    row.appendChild(makeThumb(collection.pages[0]));
+    row.appendChild(makeThumb(coverPage(collection)));
 
     const name = document.createElement("span");
     name.className = "own-row-name";
     name.textContent = collection.name;
     const small = document.createElement("small");
-    small.textContent = (collection.builtin ? "Beispiel · " : "") + pagesNote(collection);
+    small.textContent = (collection.builtin ? "Vorlage · " : "") + pagesNote(collection);
     name.appendChild(small);
     row.appendChild(name);
 
     const edit = document.createElement("button");
-    edit.className = "secondary small";
+    edit.className = "small";
     edit.textContent = collection.builtin ? "Als Kopie bearbeiten" : "Bearbeiten";
     edit.addEventListener("click", () => openEditor(collection));
     row.appendChild(edit);
@@ -182,7 +191,6 @@ function startGame(game) {
 
   activeGame = game;
   stage.innerHTML = "";
-  playTitle.textContent = game.title;
   document.body.classList.toggle("calm", settings.calm);
 
   homeScreen.classList.add("hidden");
@@ -237,7 +245,6 @@ function restartReminder() {
     if (!activeGame) return;
     reminder.classList.remove("hidden");
     Sounds.remind();
-    // Erinnerung wiederholen, solange niemand drückt
     restartReminder();
   }, seconds * 1000);
 }
@@ -254,9 +261,10 @@ function flashPressDot(kind) {
 /* ---------- Start ---------- */
 
 document.getElementById("playBackButton").addEventListener("click", () => {
-  if (settings.codeLock) askForCode(backToHome, true);
+  if (settings.codeLock) askForCode(backToHome);
   else backToHome();
 });
 
+applyTheme();
 Fx.init();
 renderHome();

@@ -1,26 +1,31 @@
 /*
   Baustein 2: Aufdecken.
 
-  Das Bild liegt unter bunten Teilen. Jeder Druck nimmt ein Teil weg
-  (zufällige Reihenfolge). Ist alles weg: Bild wippt, Text wird gesprochen,
-  Konfetti – und hat die Seite ein Video, läuft es als Belohnung.
-  Der nächste Druck bringt das nächste Bild.
+  Das Bild liegt unter Feldern in der Hauptfarbe. Jeder Druck nimmt ein Feld
+  weg (zufällige Reihenfolge, Marimba-Ton steigt). Ist alles weg: Glockenklang,
+  ein paar Funken, Text wird gesprochen – und hat die Seite ein Video, läuft
+  es als Belohnung. Der nächste Druck bringt das nächste Bild.
+  Seiten ohne Bild werden übersprungen.
 */
 
 const TILE_LAYOUTS = { 1: [1, 1], 2: [2, 1], 4: [2, 2], 6: [3, 2], 9: [3, 3], 12: [4, 3], 16: [4, 4] };
-const TILE_COLORS = ["#e63946", "#f4a261", "#f2b531", "#2a9d8f", "#3d7ab8", "#9b5de5", "#f15bb5", "#43aa8b"];
 
 function createRevealGame(collection) {
-  const pages = collection.pages;
-  let stage = null;
+  const pages = collection.pages.filter(p => hasPicture(p) || p.video);
   let wrap = null;
   let box = null;
   let order = [];
   let tiles = [];
+  let removed = 0;
   let pageIndex = -1;
-  let state = "covered";   // covered → revealed (→ video) → nächstes Bild
+  let state = "covered";   // covered → revealed → nächstes Bild
   let busy = false;
   let videoLayer = null;
+  const timers = [];
+
+  function later(fn, ms) {
+    timers.push(setTimeout(fn, ms));
+  }
 
   function nextPicture() {
     pageIndex = (pageIndex + 1) % pages.length;
@@ -29,9 +34,8 @@ function createRevealGame(collection) {
     wrap.innerHTML = "";
     box = document.createElement("div");
     box.className = "reveal-box";
-    box.appendChild(makeVisual(page));
-    // Das Emoji soll erst beim Aufdecken wippen, nicht verdeckt
-    box.querySelectorAll(".wiggle").forEach(el => el.classList.remove("wiggle"));
+    const visual = makeVisual(page);
+    if (visual) box.appendChild(visual);
 
     const count = Number(settings.tiles) || 6;
     const [cols, rows] = TILE_LAYOUTS[count] || [3, 2];
@@ -40,17 +44,15 @@ function createRevealGame(collection) {
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
-    const offset = Math.floor(Math.random() * TILE_COLORS.length);
     tiles = [];
     for (let i = 0; i < cols * rows; i++) {
       const tile = document.createElement("div");
       tile.className = "reveal-tile";
-      tile.style.background = TILE_COLORS[(i + offset) % TILE_COLORS.length];
-      tile.textContent = "?";
       grid.appendChild(tile);
       tiles.push(tile);
     }
     order = shuffle(tiles.map((_, i) => i));
+    removed = 0;
 
     box.appendChild(grid);
     wrap.appendChild(box);
@@ -58,41 +60,27 @@ function createRevealGame(collection) {
   }
 
   function removeTile() {
-    const tile = tiles[order.shift()];
-    tile.classList.add("gone");
-    Sounds.chime();
+    tiles[order.shift()].classList.add("gone");
+    Sounds.tick(removed++);
 
     if (order.length === 0) {
       state = "revealed";
       busy = true;
-      setTimeout(celebrate, 450);
+      later(celebrate, 500);
     }
   }
 
   function celebrate() {
     const page = pages[pageIndex];
-    const visual = box.querySelector(".story-visual > span");
-    if (visual) {
-      visual.classList.remove("wiggle");
-      visual.getBoundingClientRect();
-      visual.classList.add("wiggle");
-    }
 
-    if (page.text) {
-      const p = document.createElement("p");
-      p.className = "story-text";
-      p.textContent = page.text;
-      wrap.appendChild(p);
-    }
+    if (page.text && settings.showText) wrap.appendChild(textElement(page.text));
 
     const c = centerOf(box);
-    Fx.confetti(c.x, c.y);
-    Sounds.fanfare();
+    Fx.burst(c.x, c.y, 40);
+    Sounds.revealed();
 
     if (page.video) {
-      // Kurz das Bild zeigen, dann das Video als Belohnung
-      setTimeout(() => {
-        if (state !== "revealed") return;
+      later(() => {
         videoLayer = document.createElement("div");
         videoLayer.className = "reveal-video";
         const video = makeVideo(page);
@@ -100,11 +88,11 @@ function createRevealGame(collection) {
         box.appendChild(videoLayer);
         video.play().catch(() => {});
         busy = false;
-      }, 900);
+      }, 1000);
     } else {
-      setTimeout(() => sayPage(page).then(() => { busy = false; }), 500);
+      later(() => sayPage(page).then(() => { busy = false; }), 600);
       // Nicht ewig sperren, falls die Sprache hängt
-      setTimeout(() => { busy = false; }, 4000);
+      later(() => { busy = false; }, 4000);
     }
   }
 
@@ -116,13 +104,14 @@ function createRevealGame(collection) {
   }
 
   return {
-    title: collection.name + " – aufdecken",
-
     start(stageElement) {
-      stage = stageElement;
       wrap = document.createElement("div");
       wrap.className = "reveal-wrap";
-      stage.appendChild(wrap);
+      stageElement.appendChild(wrap);
+      if (pages.length === 0) {
+        wrap.appendChild(textElement("In dieser Sammlung ist noch kein Bild.", true));
+        return;
+      }
       nextPicture();
     },
 
@@ -141,6 +130,7 @@ function createRevealGame(collection) {
     release() {},
 
     stop() {
+      timers.forEach(clearTimeout);
       stopVoice();
       stopVideo();
     }

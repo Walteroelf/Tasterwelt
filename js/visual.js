@@ -1,5 +1,6 @@
 /*
-  Bilder einer Seite anzeigen: eigenes Foto (Blob) oder Emoji.
+  Bilder einer Seite anzeigen: eigenes Foto (Blob) oder mitgelieferte Grafik.
+  Seiten ohne Bild zeigen nur den Text.
   Blob-Adressen werden einmal je Blob erzeugt und wiederverwendet.
 */
 
@@ -10,11 +11,16 @@ function blobUrl(blob) {
   return blobUrls.get(blob);
 }
 
-/* Großes Bild einer Seite (für Geschichte, Aufdecken, Überraschung) */
+function hasPicture(page) {
+  return Boolean(page && (page.image || (page.svg && ILL[page.svg])));
+}
+
+/* Großes Bild einer Seite (für Geschichte, Aufdecken, Überraschung) – oder null */
 function makeVisual(page) {
+  if (!hasPicture(page)) return null;
+
   const box = document.createElement("div");
   box.className = "story-visual";
-  box.style.background = page.image ? "#fff" : (page.bg || "#fff");
 
   if (page.image) {
     const img = document.createElement("img");
@@ -23,16 +29,13 @@ function makeVisual(page) {
     img.draggable = false;
     box.appendChild(img);
   } else {
-    const span = document.createElement("span");
-    span.textContent = page.emoji || "⭐";
-    span.className = "wiggle";
-    box.appendChild(span);
+    box.innerHTML = ILL[page.svg];
   }
 
   return box;
 }
 
-/* Video einer Seite – startet sofort mit Ton (der Tasterdruck zählt als Nutzer-Aktion) */
+/* Video einer Seite – startet mit Ton (der Tasterdruck zählt als Nutzer-Aktion) */
 function makeVideo(page) {
   const video = document.createElement("video");
   video.src = blobUrl(page.video);
@@ -52,12 +55,23 @@ function makeThumb(page, className = "card-visual") {
     img.src = blobUrl(page.image);
     img.alt = "";
     box.appendChild(img);
+  } else if (page && page.svg && ILL[page.svg]) {
+    box.innerHTML = ILL[page.svg];
   } else {
-    box.textContent = (page && page.emoji) || "⭐";
-    if (page && page.bg) box.style.background = page.bg;
+    const text = document.createElement("span");
+    text.className = "card-text";
+    text.textContent = (page && page.text) || "";
+    box.appendChild(text);
   }
 
   return box;
+}
+
+function textElement(text, onlyText = false) {
+  const p = document.createElement("p");
+  p.className = "story-text" + (onlyText ? " only" : "");
+  p.textContent = text || "";
+  return p;
 }
 
 function shuffle(list) {

@@ -1,7 +1,7 @@
 /*
   Eigene Sammlungen anlegen und bearbeiten.
 
-  Jede Seite: Foto oder Emoji, Text (wird vorgelesen), eigene Sprachaufnahme
+  Jede Seite: Foto (oder mitgelieferte Grafik), Text (wird vorgelesen), eigene Sprachaufnahme
   (hat Vorrang vor der Gerätestimme) und auf Wunsch ein Video.
   Mitgelieferte Beispiele werden nicht verändert, sondern als Kopie bearbeitet.
 
@@ -31,7 +31,7 @@ let recorder = null;
 let recordingPage = null;
 
 function newPage(fields = {}) {
-  return { id: createId(), text: "", emoji: "", bg: PASTELS[Math.floor(Math.random() * PASTELS.length)], image: null, audio: null, video: null, ...fields };
+  return { id: createId(), text: "", svg: null, image: null, audio: null, video: null, ...fields };
 }
 
 function openEditor(collection) {
@@ -77,7 +77,7 @@ function closeEditor() {
 
 function toolButton(label, onClick, extraClass = "") {
   const button = document.createElement("button");
-  button.className = "secondary tiny " + extraClass;
+  button.className = "tiny " + extraClass;
   button.textContent = label;
   button.addEventListener("click", onClick);
   return button;
@@ -103,7 +103,7 @@ function renderPageRows() {
     if (page.video) {
       const badge = document.createElement("span");
       badge.className = "video-badge";
-      badge.textContent = "🎬";
+      badge.textContent = "Video";
       thumb.appendChild(badge);
     }
     row.appendChild(thumb);
@@ -114,7 +114,7 @@ function renderPageRows() {
     const text = document.createElement("input");
     text.type = "text";
     text.className = "text-input";
-    text.placeholder = "Text, der vorgelesen wird (z. B. „Mama winkt!“)";
+    text.placeholder = "Text, der vorgelesen wird";
     text.value = page.text || "";
     text.addEventListener("input", () => { page.text = text.value; });
     fields.appendChild(text);
@@ -122,45 +122,38 @@ function renderPageRows() {
     const tools = document.createElement("div");
     tools.className = "page-tools";
 
-    tools.appendChild(toolButton(page.image ? "📷 Anderes Foto" : "📷 Foto", () => {
+    tools.appendChild(toolButton(page.image ? "Anderes Foto" : "Foto", () => {
       photoTarget = page;
       pagePhotoInput.value = "";
       pagePhotoInput.click();
     }));
 
     if (page.image) {
-      tools.appendChild(toolButton("✕ Foto", () => { page.image = null; renderPageRows(); }));
-    } else {
-      const emoji = document.createElement("input");
-      emoji.type = "text";
-      emoji.className = "text-input emoji-input";
-      emoji.placeholder = "Emoji";
-      emoji.maxLength = 8;
-      emoji.value = page.emoji || "";
-      emoji.addEventListener("change", () => { page.emoji = emoji.value.trim(); renderPageRows(); });
-      tools.appendChild(emoji);
+      tools.appendChild(toolButton("Foto entfernen", () => { page.image = null; renderPageRows(); }));
+    } else if (page.svg) {
+      tools.appendChild(toolButton("Grafik entfernen", () => { page.svg = null; renderPageRows(); }));
     }
 
     const isRecording = recordingPage === page;
-    tools.appendChild(toolButton(isRecording ? "⏹ Stopp" : "🎤 Aufnehmen", () => {
+    tools.appendChild(toolButton(isRecording ? "Stopp" : (page.audio ? "Neu aufnehmen" : "Aufnehmen"), () => {
       if (isRecording) stopRecording();
       else startRecording(page);
     }, isRecording ? "recording" : ""));
 
     if (page.audio) {
-      tools.appendChild(toolButton("▶ Anhören", () => { unlockAudio(); playBlob(page.audio); }));
-      tools.appendChild(toolButton("✕ Aufnahme", () => { page.audio = null; renderPageRows(); }));
+      tools.appendChild(toolButton("Anhören", () => { unlockAudio(); playBlob(page.audio); }));
+      tools.appendChild(toolButton("Aufnahme löschen", () => { page.audio = null; renderPageRows(); }));
     } else if (page.text) {
-      tools.appendChild(toolButton("▶ Text", () => { unlockAudio(); speak(page.text); }));
+      tools.appendChild(toolButton("Text anhören", () => { unlockAudio(); speak(page.text); }));
     }
 
-    tools.appendChild(toolButton(page.video ? "🎬 Anderes Video" : "🎬 Video", () => {
+    tools.appendChild(toolButton(page.video ? "Anderes Video" : "Video", () => {
       videoTarget = page;
       pageVideoInput.value = "";
       pageVideoInput.click();
     }));
     if (page.video) {
-      tools.appendChild(toolButton("✕ Video", () => { page.video = null; renderPageRows(); }));
+      tools.appendChild(toolButton("Video entfernen", () => { page.video = null; renderPageRows(); }));
     }
 
     const up = toolButton("↑", () => movePage(index, -1));
@@ -171,7 +164,7 @@ function renderPageRows() {
     down.setAttribute("aria-label", "Seite nach unten");
     tools.append(up, down);
 
-    const remove = toolButton("🗑", () => {
+    const remove = toolButton("Löschen", () => {
       if (recordingPage === page) stopRecording();
       draft.pages.splice(index, 1);
       renderPageRows();
@@ -317,7 +310,7 @@ function stopRecording() {
 /* ---------- Speichern, Löschen ---------- */
 
 document.getElementById("addPageButton").addEventListener("click", () => {
-  draft.pages.push(newPage({ emoji: "⭐" }));
+  draft.pages.push(newPage());
   renderPageRows();
 });
 
@@ -378,12 +371,11 @@ exportButton.addEventListener("click", async () => {
 
   const data = {
     app: "tasterwelt",
-    version: 1,
+    version: 2,
     name: draft.name,
     pages: await Promise.all(draft.pages.map(async page => ({
       text: page.text || "",
-      emoji: page.emoji || "",
-      bg: page.bg || "",
+      svg: page.svg || null,
       image: page.image ? await blobToDataUrl(page.image) : null,
       audio: page.audio ? await blobToDataUrl(page.audio) : null,
       video: page.video ? await blobToDataUrl(page.video) : null
@@ -424,8 +416,7 @@ importInput.addEventListener("change", async () => {
       createdAt: Date.now(),
       pages: await Promise.all(data.pages.map(async page => newPage({
         text: String(page.text || ""),
-        emoji: String(page.emoji || ""),
-        bg: page.bg || PASTELS[0],
+        svg: ILL[page.svg] ? page.svg : null,
         image: await dataUrlToBlob(page.image),
         audio: await dataUrlToBlob(page.audio),
         video: await dataUrlToBlob(page.video)

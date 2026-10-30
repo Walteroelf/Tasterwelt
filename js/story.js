@@ -1,8 +1,8 @@
 /*
   Baustein 1: Geschichte.
 
-  Titelseite → jeder Druck blättert eine Seite weiter (Bild, Text, Sprache,
-  ggf. Video) → "Ende" mit Konfetti → nächster Druck fängt von vorn an.
+  Titel → jeder Druck blendet die nächste Seite ein (Bild, Text, Sprache,
+  ggf. Video) → "Ende" mit einem kurzen Klang → nächster Druck fängt von vorn an.
 */
 
 function createStoryGame(collection) {
@@ -17,7 +17,7 @@ function createStoryGame(collection) {
     element.classList.add("story-page", "enter");
     stage.appendChild(element);
 
-    // Erst zeichnen lassen, dann hineinschieben
+    // Erst zeichnen lassen, dann einblenden
     element.getBoundingClientRect();
     element.classList.remove("enter");
 
@@ -25,44 +25,41 @@ function createStoryGame(collection) {
       const old = current;
       old.querySelectorAll("video").forEach(v => v.pause());
       old.classList.add("leave");
-      setTimeout(() => old.remove(), 700);
+      setTimeout(() => old.remove(), 1300);
     }
     current = element;
   }
 
-  function textElement(text) {
-    const p = document.createElement("p");
-    p.className = "story-text";
-    p.textContent = text || "";
-    return p;
+  function fill(element, page, { forceText = false } = {}) {
+    const visual = page.video ? null : makeVisual(page);
+
+    if (page.video) {
+      const box = document.createElement("div");
+      box.className = "story-visual";
+      box.appendChild(makeVideo(page));
+      element.appendChild(box);
+    } else if (visual) {
+      visual.classList.add("rise");
+      element.appendChild(visual);
+    }
+
+    const hasPictureHere = Boolean(page.video || visual);
+    if (page.text && (settings.showText || forceText || !hasPictureHere)) {
+      element.appendChild(textElement(page.text, !hasPictureHere));
+    }
   }
 
   function showTitle() {
     const page = document.createElement("div");
     page.classList.add("story-title-page");
-    page.style.background = "var(--buehne)";
-    page.append(makeVisual(pages[0] || {}), textElement(collection.name));
+    fill(page, { ...(pages[0] || {}), video: null, text: collection.name }, { forceText: true });
     showElement(page);
     updateProgress();
-    speak(collection.name);
   }
 
   function showPage(data) {
     const page = document.createElement("div");
-    page.style.background = data.image || data.video ? "var(--buehne)" : (data.bg || "var(--buehne)");
-
-    let visual;
-    if (data.video) {
-      visual = document.createElement("div");
-      visual.className = "story-visual";
-      const video = makeVideo(data);
-      visual.appendChild(video);
-    } else {
-      visual = makeVisual(data);
-    }
-
-    page.append(visual);
-    if (data.text) page.append(textElement(data.text));
+    fill(page, data);
     showElement(page);
     updateProgress();
 
@@ -70,7 +67,7 @@ function createStoryGame(collection) {
 
     if (data.video) {
       stopVoice();
-      const video = visual.querySelector("video");
+      const video = page.querySelector("video");
       video.play().catch(() => {});
       // Nach dem Video noch die Aufnahme bzw. den Text, falls vorhanden
       video.onended = () => { if (current === page && (data.audio || data.text)) sayPage(data); };
@@ -81,28 +78,23 @@ function createStoryGame(collection) {
 
   function showEnd() {
     const page = document.createElement("div");
-    page.style.background = "var(--buehne)";
-    page.append(makeVisual({ emoji: "🌟", bg: "#fff1c1" }), textElement("Ende!"));
+    page.appendChild(textElement("Ende", true));
     showElement(page);
     updateProgress();
-
-    Sounds.fanfare();
-    Fx.rain(140);
-    speak("Ende! Super gemacht!");
+    Sounds.ending();
   }
 
   function updateProgress() {
     progress.innerHTML = "";
     pages.forEach((_, i) => {
-      const dot = document.createElement("span");
-      if (i <= index) dot.classList.add("done");
-      progress.appendChild(dot);
+      const bar = document.createElement("span");
+      if (i <= index && index < pages.length) bar.classList.add("done");
+      if (index >= pages.length) bar.classList.add("done");
+      progress.appendChild(bar);
     });
   }
 
   return {
-    title: collection.name,
-
     start(stageElement) {
       stage = stageElement;
       progress = document.createElement("div");
@@ -114,11 +106,10 @@ function createStoryGame(collection) {
     press() {
       if (busy || pages.length === 0) return;
       busy = true;
-      setTimeout(() => { busy = false; }, 450);
+      setTimeout(() => { busy = false; }, 500);
 
       stopVoice();
       index++;
-
       if (index > pages.length) index = 0;
 
       if (index === pages.length) showEnd();

@@ -1,9 +1,7 @@
-# Schriften
+# Schrift
 
-Übernommen aus Bilderwahl bzw. Kirmes-Kiosk, lokal eingebunden (keine Verbindung zu Google & Co.).
+**Atkinson Hyperlegible** – entwickelt vom Braille Institute of America für Menschen mit Sehbeeinträchtigung.
+https://www.brailleinstitute.org/freefont
 
-- **Andika** (Fließtext) – SIL International, https://software.sil.org/andika/
-- **Grandstander** (Überschriften) – Tyler Finck, https://github.com/Etcetera-Type-Co/Grandstander
-
-Beide stehen unter der **SIL Open Font License 1.1** (https://openfontlicense.org).
-Die Schriften dürfen frei genutzt und mit der App weitergegeben, aber nicht einzeln verkauft werden.
+Lokal eingebunden (keine Verbindung zu Google & Co.), Dateien aus dem Paket @fontsource/atkinson-hyperlegible.
+Lizenz: **SIL Open Font License 1.1** (https://openfontlicense.org) – frei nutzbar und mit der App weitergebbar, aber nicht einzeln verkäuflich.

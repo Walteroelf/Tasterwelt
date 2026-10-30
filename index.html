@@ -10,71 +10,79 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Tasterwelt" />
-  <meta name="theme-color" content="#d9473b" />
+  <meta name="theme-color" content="#f4f1ea" />
 
-  <link rel="stylesheet" href="css/style.css?v=1" />
+  <link rel="stylesheet" href="css/style.css?v=2" />
 </head>
 
 <body>
-  <!-- ===================== Startseite ===================== -->
+  <!-- ===================== Startseite (Lehrkraft) ===================== -->
   <div class="home-page" id="homeScreen">
-    <header>
-      <div class="markise" aria-hidden="true"></div>
-      <div class="kopf">
-        <h1 class="schild">Tasterwelt</h1>
-        <span class="platz"></span>
-        <button class="gear-button" id="homeGearButton" aria-label="Einstellungen (Lehrkraft)" title="Einstellungen">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="currentColor" fill-opacity=".15"/></svg>
-        </button>
+    <header class="top">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <h1>Tasterwelt</h1>
       </div>
+      <span class="switch-status" id="switchStatus"></span>
+      <button class="icon-button" id="homeGearButton" aria-label="Einstellungen" title="Einstellungen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
     </header>
 
     <div class="home-content">
-      <p class="intro">
-        Taster anschließen, Übung antippen – dann geht es mit jedem Tasterdruck weiter.
-        <span class="switch-status" id="switchStatus"></span>
-      </p>
+      <p class="lead">Ursache und Wirkung mit dem Taster. Übung wählen – jeder Druck bewirkt etwas.</p>
 
       <section class="home-section">
-        <h2><span class="nummer">1</span> Geschichte</h2>
-        <p class="hint">Jeder Druck blättert eine Seite weiter – mit Bild, Sprache oder eigener Aufnahme.</p>
+        <div class="section-head">
+          <span class="num">01</span>
+          <h2>Geschichte</h2>
+          <p>Jeder Druck blättert eine Seite weiter.</p>
+        </div>
         <div class="card-grid" id="storyCards"></div>
       </section>
 
       <section class="home-section">
-        <h2><span class="nummer">2</span> Aufdecken</h2>
-        <p class="hint">Jeder Druck nimmt ein Teil weg, bis das Bild ganz zu sehen ist. Am Ende läuft ein eigenes Video, wenn eins dabei ist.</p>
+        <div class="section-head">
+          <span class="num">02</span>
+          <h2>Aufdecken</h2>
+          <p>Jeder Druck nimmt ein Feld weg, bis das Bild frei ist.</p>
+        </div>
         <div class="card-grid" id="revealCards"></div>
       </section>
 
       <section class="home-section">
-        <h2><span class="nummer">3</span> Aufbauen</h2>
-        <p class="hint">Jeder Druck baut etwas auf – nach ein paar Drücken passiert etwas Großes.</p>
+        <div class="section-head">
+          <span class="num">03</span>
+          <h2>Aufbauen</h2>
+          <p>Jeder Druck baut weiter – am Ende passiert etwas.</p>
+        </div>
         <div class="card-grid" id="buildCards"></div>
       </section>
 
       <section class="home-section">
-        <h2><span class="nummer">4</span> Effekt</h2>
-        <p class="hint">Jeder Druck löst sofort einen Effekt aus. Licht und Musik können auch nur laufen, solange der Taster gedrückt ist.</p>
+        <div class="section-head">
+          <span class="num">04</span>
+          <h2>Effekt</h2>
+          <p>Jeder Druck löst sofort etwas aus. Im Halten-Modus läuft es, solange gedrückt wird.</p>
+        </div>
         <div class="card-grid" id="effectCards"></div>
       </section>
 
       <section class="home-section own-section">
-        <h2>Eigene Inhalte</h2>
-        <p class="hint">
-          Eine Sammlung besteht aus Seiten mit Foto (oder Emoji), Text, eigener Sprachaufnahme und auf Wunsch einem Video.
-          Jede Sammlung lässt sich als Geschichte, zum Aufdecken und als Überraschung spielen.
-        </p>
+        <div class="section-head">
+          <span class="num">＋</span>
+          <h2>Eigene Inhalte</h2>
+          <p>Sammlungen aus eigenen Fotos, Texten, Sprachaufnahmen und Videos – spielbar als Geschichte, zum Aufdecken und als Überraschung.</p>
+        </div>
         <div class="own-list" id="ownList"></div>
         <div class="button-row">
-          <button id="newCollectionButton" class="secondary small">+ Neue Sammlung</button>
-          <button id="importButton" class="secondary small">Sammlung importieren</button>
+          <button id="newCollectionButton" class="primary">Neue Sammlung</button>
+          <button id="importButton">Importieren</button>
           <input type="file" id="importInput" accept=".json,application/json" class="hidden" />
         </div>
-        <p class="credit">
-          Eigene Sammlungen bleiben nur auf diesem Gerät gespeichert –
-          am besten die App über „Teilen → Zum Home-Bildschirm“ ablegen.
-          Zum Weitergeben an ein anderes iPad: „Exportieren“ und die Datei per AirDrop schicken.
+        <p class="footnote">
+          Alles bleibt auf diesem Gerät. Zum Weitergeben: Sammlung öffnen → Exportieren → per AirDrop senden.
+          Tipp: App über „Teilen → Zum Home-Bildschirm“ ablegen, dann läuft sie auch offline.
         </p>
       </section>
     </div>
@@ -83,27 +91,25 @@
   <!-- ===================== Spielfläche ===================== -->
   <div class="play-screen hidden" id="playScreen">
     <div class="play-top">
-      <button class="round-button" id="playBackButton" aria-label="Zurück zur Übersicht" title="Zurück">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10" fill="currentColor" fill-opacity=".15"/></svg>
+      <button class="stage-button" id="playBackButton" aria-label="Zurück zur Übersicht" title="Zurück">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
       </button>
-      <span class="play-title" id="playTitle"></span>
-      <button class="round-button" id="playGearButton" aria-label="Einstellungen (Lehrkraft)" title="Einstellungen">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="currentColor" fill-opacity=".15"/></svg>
+      <span class="platz"></span>
+      <button class="stage-button" id="playGearButton" aria-label="Einstellungen" title="Einstellungen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </button>
     </div>
 
     <!-- Hier zeichnen die Bausteine (js/story.js, reveal.js, build.js, effect.js) -->
     <div class="stage" id="stage"></div>
 
-    <!-- Konfetti, Feuerwerk & Co. (js/fx.js) -->
+    <!-- Funken, Feuerwerk, Wellen (js/fx.js) -->
     <canvas class="fx-canvas" id="fxCanvas" aria-hidden="true"></canvas>
 
     <!-- Erinnerung, wenn eine Weile nicht gedrückt wurde -->
-    <div class="reminder hidden" id="reminder" aria-hidden="true">
-      <div class="reminder-switch"></div>
-    </div>
+    <div class="reminder hidden" id="reminder" aria-hidden="true"><span></span><span></span></div>
 
-    <!-- Kleiner Punkt: Tasterdruck angekommen (grün) oder in der Sperrzeit (grau) -->
+    <!-- Kleiner Punkt: Tasterdruck angekommen (hell) oder in der Sperrzeit (gedämpft) -->
     <div class="press-dot" id="pressDot" aria-hidden="true"></div>
   </div>
 
@@ -112,34 +118,31 @@
     <div class="modal editor-modal">
       <h2 id="editorTitle">Sammlung bearbeiten</h2>
 
-      <label for="collectionNameInput"><strong>Name der Sammlung:</strong></label>
-      <input type="text" id="collectionNameInput" class="text-input" placeholder="z. B. Meine Familie" />
+      <label class="field-label" for="collectionNameInput">Name</label>
+      <input type="text" id="collectionNameInput" class="text-input" placeholder="Unser Ausflug" />
 
-      <label for="multiPhotoInput"><strong>Fotos hinzufügen (mehrere auf einmal möglich):</strong></label>
+      <label class="field-label" for="multiPhotoInput">Fotos hinzufügen</label>
       <input type="file" id="multiPhotoInput" accept="image/*" multiple />
-      <p class="hint">Aus jedem Foto wird eine Seite. Der Dateiname wird zum Text, z. B. <strong>Mama winkt.jpg</strong> → „Mama winkt“.</p>
+      <p class="hint">Mehrere auf einmal möglich. Jedes Foto wird eine Seite, der Dateiname wird zum Text (Am See.jpg → „Am See“).</p>
 
       <div id="pageRows" class="page-rows"></div>
 
       <div class="button-row">
-        <button id="addPageButton" class="secondary small">+ Leere Seite</button>
+        <button id="addPageButton" class="small">Seite ohne Foto</button>
       </div>
 
-      <p class="person-hint">
-        Fotos, Videos und Aufnahmen bleiben nur auf diesem Gerät. Fotos von Personen bitte nur mit Einverständnis verwenden.
-      </p>
+      <p class="hint">Fotos, Videos und Aufnahmen bleiben auf diesem Gerät. Fotos von Personen nur mit Einverständnis verwenden.</p>
 
-      <p class="code-error" id="editorError" aria-live="polite"></p>
+      <p class="error-text" id="editorError" aria-live="polite"></p>
 
-      <div class="button-row">
-        <button id="saveCollectionButton">Speichern</button>
-        <button id="cancelEditButton" class="secondary">Abbrechen</button>
+      <div class="button-row modal-actions">
+        <button id="saveCollectionButton" class="primary">Speichern</button>
+        <button id="cancelEditButton">Abbrechen</button>
         <span class="platz"></span>
-        <button id="exportCollectionButton" class="secondary small hidden">Exportieren</button>
-        <button id="deleteCollectionButton" class="secondary small danger hidden">Sammlung löschen</button>
+        <button id="exportCollectionButton" class="small hidden">Exportieren</button>
+        <button id="deleteCollectionButton" class="small danger hidden">Löschen</button>
       </div>
 
-      <!-- Wird für Foto/Video einer einzelnen Seite benutzt -->
       <input type="file" id="pagePhotoInput" accept="image/*" class="hidden" />
       <input type="file" id="pageVideoInput" accept="video/*" class="hidden" />
     </div>
@@ -149,18 +152,18 @@
   <div class="modal-backdrop hidden" id="codeScreen">
     <div class="modal code-modal">
       <h2>Einstellungen</h2>
-      <p class="hint">Bitte diese Zahlen eintippen:</p>
+      <p class="hint">Diese Zahlen eintippen:</p>
       <p class="code-words" id="codeWords"></p>
       <div class="code-dots" id="codeDots" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
       <div class="keypad" id="keypad">
         <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
         <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
         <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
-        <button data-key="back" class="secondary" aria-label="Letzte Zahl löschen">Löschen</button>
+        <button data-key="back" class="key-text" aria-label="Letzte Zahl löschen">Löschen</button>
         <button data-key="0">0</button>
-        <button data-key="cancel" class="secondary">Abbrechen</button>
+        <button data-key="cancel" class="key-text">Abbrechen</button>
       </div>
-      <p class="code-error" id="codeError" aria-live="polite"></p>
+      <p class="error-text" id="codeError" aria-live="polite"></p>
     </div>
   </div>
 
@@ -168,198 +171,194 @@
   <div class="modal-backdrop hidden" id="settingsScreen">
     <div class="modal">
       <h2>Einstellungen</h2>
-      <div class="settings-box">
 
-        <div class="settings-group">
-          <strong>Taster</strong>
+      <div class="settings-group">
+        <h3>Taster</h3>
 
-          <div class="switch-test" id="switchTest">
-            <span class="switch-test-dot" id="switchTestDot"></span>
-            <span id="switchTestText">Taster testen: Jetzt einmal drücken …</span>
-          </div>
+        <div class="switch-test" id="switchTest">
+          <span class="switch-test-dot" id="switchTestDot"></span>
+          <span id="switchTestText">Taster testen – jetzt einmal drücken</span>
+        </div>
 
-          <label class="toggle">
-            <input type="checkbox" id="anyKeyToggle" />
-            <span>
-              <strong>Jede Taste zählt als Taster</strong><br />
-              Am einfachsten: Egal ob der Adapter Leertaste, Enter oder eine Zahl schickt – jeder Druck zählt.
-            </span>
-          </label>
+        <label class="toggle">
+          <span><strong>Jede Taste zählt</strong><small>Egal ob der Adapter Leertaste, Enter oder eine Zahl schickt.</small></span>
+          <input type="checkbox" id="anyKeyToggle" />
+        </label>
 
-          <div id="keyBox" class="key-box">
-            <p class="hint">Nur diese Tasten zählen:</p>
-            <div class="key-list" id="keyList"></div>
-            <button id="learnKeyButton" class="secondary small">Taste lernen</button>
-          </div>
+        <div id="keyBox" class="key-box">
+          <p class="hint">Nur diese Tasten zählen:</p>
+          <div class="key-list" id="keyList"></div>
+          <button id="learnKeyButton" class="small">Taste lernen</button>
+        </div>
 
-          <label class="toggle">
-            <input type="checkbox" id="screenTapToggle" />
-            <span>
-              <strong>Bildschirm antippen zählt auch</strong><br />
-              Der ganze Bildschirm ist dann ein großer Taster – praktisch zum Ausprobieren ohne Taster.
-            </span>
-          </label>
+        <label class="toggle">
+          <span><strong>Bildschirm zählt als Taster</strong><small>Antippen irgendwo auf der Spielfläche – zum Ausprobieren ohne Taster.</small></span>
+          <input type="checkbox" id="screenTapToggle" />
+        </label>
 
-          <label for="triggerSelect">Auslösen:</label>
+        <div class="field-row">
+          <label for="triggerSelect">Auslösen</label>
           <select id="triggerSelect">
             <option value="press">beim Drücken</option>
             <option value="release">beim Loslassen</option>
           </select>
-
-          <label for="lockSelect">Sperrzeit nach einem Druck:</label>
-          <select id="lockSelect">
-            <option value="0">keine</option>
-            <option value="300">0,3 Sekunden</option>
-            <option value="600">0,6 Sekunden</option>
-            <option value="1000">1 Sekunde</option>
-            <option value="2000">2 Sekunden</option>
-            <option value="3000">3 Sekunden</option>
-            <option value="5000">5 Sekunden</option>
-          </select>
-          <p class="hint">Gegen Doppeldrücke, z. B. bei Tremor oder wenn der Taster zweimal angeschlagen wird.</p>
-
-          <label for="reminderSelect">Erinnerung, wenn nicht gedrückt wird:</label>
-          <select id="reminderSelect">
-            <option value="0">aus</option>
-            <option value="10">nach 10 Sekunden</option>
-            <option value="20">nach 20 Sekunden</option>
-            <option value="30">nach 30 Sekunden</option>
-            <option value="60">nach 1 Minute</option>
-          </select>
-
-          <label class="toggle">
-            <input type="checkbox" id="pressDotToggle" />
-            <span>
-              <strong>Tasterdruck anzeigen</strong><br />
-              Unten rechts blinkt ein kleiner Punkt: grün = angekommen, grau = in der Sperrzeit.
-            </span>
-          </label>
-
-          <details class="hint">
-            <summary>Taster am iPad – das ist wichtig</summary>
-            <p>
-              Der Taster-Adapter (per Kabel oder Bluetooth, z. B. iSwitch) meldet sich am iPad als <strong>Tastatur</strong>.
-              Die <strong>Schaltersteuerung</strong> von iPadOS (Einstellungen → Bedienungshilfen → Schaltersteuerung)
-              muss dafür <strong>aus</strong> sein – sonst fängt das iPad den Tasterdruck ab.
-            </p>
-            <p>
-              Beim iSwitch im Tastatur-Modus am besten „Leertaste“ oder „Enter“ einstellen.
-              Kommt nichts an: oben im grauen Feld testen, welche Taste ankommt.
-            </p>
-          </details>
         </div>
 
-        <div class="settings-group">
-          <strong>Sprache und Ton</strong>
+        <div class="field-row">
+          <label for="lockSelect">Sperrzeit nach einem Druck</label>
+          <select id="lockSelect">
+            <option value="0">keine</option>
+            <option value="300">0,3 s</option>
+            <option value="600">0,6 s</option>
+            <option value="1000">1 s</option>
+            <option value="2000">2 s</option>
+            <option value="3000">3 s</option>
+            <option value="5000">5 s</option>
+          </select>
+        </div>
 
-          <label class="toggle">
-            <input type="checkbox" id="speechToggle" />
-            <span>
-              <strong>Texte vorlesen</strong><br />
-              Eigene Sprachaufnahmen werden immer abgespielt. Wo keine da ist, liest die Gerätestimme den Text vor.
-            </span>
-          </label>
+        <div class="field-row">
+          <label for="reminderSelect">Erinnerung ohne Druck</label>
+          <select id="reminderSelect">
+            <option value="0">aus</option>
+            <option value="10">nach 10 s</option>
+            <option value="20">nach 20 s</option>
+            <option value="30">nach 30 s</option>
+            <option value="60">nach 1 min</option>
+          </select>
+        </div>
 
-          <label for="rateSelect">Sprechtempo:</label>
+        <label class="toggle">
+          <span><strong>Tasterdruck anzeigen</strong><small>Kleiner Punkt unten rechts: hell = angekommen, gedämpft = Sperrzeit.</small></span>
+          <input type="checkbox" id="pressDotToggle" />
+        </label>
+
+        <details class="hint">
+          <summary>Taster am iPad – wichtig</summary>
+          <p>
+            Adapter und iSwitch melden sich am iPad als Tastatur. Die <strong>Schaltersteuerung</strong> von iPadOS
+            (Einstellungen → Bedienungshilfen → Schaltersteuerung) muss <strong>aus</strong> sein, sonst fängt das iPad den Druck ab.
+            Beim iSwitch den Tastatur-Modus mit Leertaste oder Enter wählen.
+          </p>
+        </details>
+      </div>
+
+      <div class="settings-group">
+        <h3>Spielfläche</h3>
+
+        <div class="field-row">
+          <label for="themeSelect">Farbwelt</label>
+          <select id="themeSelect">
+            <option value="nacht">Nacht – mehrfarbig auf Schwarz</option>
+            <option value="gelb">Gelb auf Schwarz (CVI)</option>
+            <option value="rot">Rot auf Schwarz (CVI)</option>
+            <option value="weiss">Weiß auf Schwarz</option>
+            <option value="hell">Hell – dunkel auf Papier</option>
+          </select>
+        </div>
+        <div class="theme-preview" id="themePreview" aria-hidden="true"><span></span><span></span><span></span></div>
+
+        <label class="toggle">
+          <span><strong>Text anzeigen</strong><small>Unter Bildern steht der Text groß dazu.</small></span>
+          <input type="checkbox" id="showTextToggle" />
+        </label>
+
+        <label class="toggle">
+          <span><strong>Ruhiger Modus</strong><small>Weniger Funken, langsamere Übergänge.</small></span>
+          <input type="checkbox" id="calmToggle" />
+        </label>
+      </div>
+
+      <div class="settings-group">
+        <h3>Ton</h3>
+
+        <label class="toggle">
+          <span><strong>Texte vorlesen</strong><small>Eigene Aufnahmen laufen immer. Sonst liest die Gerätestimme.</small></span>
+          <input type="checkbox" id="speechToggle" />
+        </label>
+
+        <div class="field-row">
+          <label for="rateSelect">Sprechtempo</label>
           <select id="rateSelect">
             <option value="0.7">langsam</option>
             <option value="0.85">etwas langsamer</option>
             <option value="1">normal</option>
           </select>
-
-          <label class="toggle">
-            <input type="checkbox" id="soundsToggle" />
-            <span>
-              <strong>Geräusche</strong><br />
-              Pumpen, Platzen, Feuerwerk, Töne …
-            </span>
-          </label>
-        </div>
-
-        <div class="settings-group">
-          <strong>Aufdecken</strong>
-          <label for="tilesSelect">Anzahl der Teile:</label>
-          <select id="tilesSelect">
-            <option value="1">1 Teil (ein Druck – Bild ist da)</option>
-            <option value="2">2 Teile</option>
-            <option value="4">4 Teile</option>
-            <option value="6">6 Teile</option>
-            <option value="9">9 Teile</option>
-            <option value="12">12 Teile</option>
-            <option value="16">16 Teile</option>
-          </select>
-        </div>
-
-        <div class="settings-group">
-          <strong>Aufbauen</strong>
-          <label for="stepsSelect">Drücke bis zum großen Ereignis:</label>
-          <select id="stepsSelect">
-            <option value="1">1 Druck</option>
-            <option value="3">3 Drücke</option>
-            <option value="5">5 Drücke</option>
-            <option value="8">8 Drücke</option>
-            <option value="10">10 Drücke</option>
-            <option value="15">15 Drücke</option>
-          </select>
-        </div>
-
-        <div class="settings-group">
-          <strong>Effekt</strong>
-          <label class="toggle">
-            <input type="checkbox" id="holdToggle" />
-            <span>
-              <strong>Halten-Modus für Licht, Musik und Feuerwerk</strong><br />
-              Der Effekt läuft nur, solange der Taster gedrückt ist – wie ein Spielzeug am PowerLink.
-              Aus: Jeder Druck löst den Effekt einmal aus.
-            </span>
-          </label>
         </div>
 
         <label class="toggle">
-          <input type="checkbox" id="calmToggle" />
-          <span>
-            <strong>Ruhiger Modus</strong><br />
-            Weniger Konfetti und Bewegung, sanftere Übergänge.
-          </span>
+          <span><strong>Klänge</strong><small>Musik und Geräusche der Bausteine.</small></span>
+          <input type="checkbox" id="soundsToggle" />
         </label>
-
-        <label class="toggle">
-          <input type="checkbox" id="codeLockToggle" />
-          <span>
-            <strong>Zahlen-Code vor Einstellungen und Zurück</strong><br />
-            Wer auf das Zahnrad oder das Haus tippt, muss vier Zahlen eintippen, die als Wörter angezeigt werden.
-            So kommen Kinder nicht versehentlich aus der Übung.
-          </span>
-        </label>
-
-        <div class="offline-box">
-          <strong>Ohne Internet nutzen</strong>
-          <p class="hint" id="offlineStatus">Wird geprüft …</p>
-        </div>
       </div>
 
-      <p class="credit">Tasterwelt · <span class="version">Version 1</span></p>
+      <div class="settings-group">
+        <h3>Bausteine</h3>
 
-      <div class="button-row">
-        <button id="settingsCloseButton">Fertig</button>
-        <button id="settingsEndButton" class="secondary hidden">Übung beenden</button>
+        <div class="field-row">
+          <label for="tilesSelect">Aufdecken: Felder</label>
+          <select id="tilesSelect">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="9">9</option>
+            <option value="12">12</option>
+            <option value="16">16</option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <label for="stepsSelect">Aufbauen: Drücke bis zum Ereignis</label>
+          <select id="stepsSelect">
+            <option value="1">1</option>
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+          </select>
+        </div>
+
+        <label class="toggle">
+          <span><strong>Halten-Modus</strong><small>Feuerwerk, Wellen, Polarlicht, Lavalampe und Musik laufen nur, solange der Taster gedrückt ist.</small></span>
+          <input type="checkbox" id="holdToggle" />
+        </label>
+      </div>
+
+      <div class="settings-group">
+        <h3>Schutz</h3>
+        <label class="toggle">
+          <span><strong>Zahlen-Code</strong><small>Vor Einstellungen und Zurück müssen vier Zahlen eingetippt werden, die als Wörter erscheinen.</small></span>
+          <input type="checkbox" id="codeLockToggle" />
+        </label>
+        <p class="hint" id="offlineStatus">Wird geprüft …</p>
+      </div>
+
+      <div class="button-row modal-actions">
+        <button id="settingsCloseButton" class="primary">Fertig</button>
+        <button id="settingsEndButton" class="hidden">Übung beenden</button>
+        <span class="platz"></span>
+        <span class="footnote">Tasterwelt · Version 2</span>
       </div>
     </div>
   </div>
 
-  <script src="js/db.js?v=1"></script>
-  <script src="js/content.js?v=1"></script>
-  <script src="js/sound.js?v=1"></script>
-  <script src="js/fx.js?v=1"></script>
-  <script src="js/visual.js?v=1"></script>
-  <script src="js/story.js?v=1"></script>
-  <script src="js/reveal.js?v=1"></script>
-  <script src="js/build.js?v=1"></script>
-  <script src="js/effect.js?v=1"></script>
-  <script src="js/app.js?v=1"></script>
-  <script src="js/switch.js?v=1"></script>
-  <script src="js/editor.js?v=1"></script>
-  <script src="js/teacher.js?v=1"></script>
-  <script src="js/offline.js?v=1"></script>
+  <script src="js/db.js?v=2"></script>
+  <script src="js/illustrations.js?v=2"></script>
+  <script src="js/content.js?v=2"></script>
+  <script src="js/theme.js?v=2"></script>
+  <script src="js/sound.js?v=2"></script>
+  <script src="js/fx.js?v=2"></script>
+  <script src="js/visual.js?v=2"></script>
+  <script src="js/story.js?v=2"></script>
+  <script src="js/reveal.js?v=2"></script>
+  <script src="js/build.js?v=2"></script>
+  <script src="js/effect.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/switch.js?v=2"></script>
+  <script src="js/editor.js?v=2"></script>
+  <script src="js/teacher.js?v=2"></script>
+  <script src="js/offline.js?v=2"></script>
 </body>
 </html>

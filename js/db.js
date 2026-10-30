@@ -2,7 +2,7 @@
   Speicherung auf dem Gerät (IndexedDB).
 
   collections: { id, name, createdAt, pages: [Seite …] }
-  Seite:       { id, text, emoji, bg, image (Blob | null), audio (Blob | null), video (Blob | null) }
+  Seite:       { id, text, svg, image (Blob | null), audio (Blob | null), video (Blob | null) }
 
   Alles bleibt lokal im Browser dieses Geräts.
 */

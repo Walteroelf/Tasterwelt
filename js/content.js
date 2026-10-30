@@ -1,19 +1,14 @@
 /*
-  Mitgelieferte Inhalte.
-
-  Die Beispiel-Sammlungen benutzen Emojis als Bilder – die sehen auf dem iPad
-  schön aus und brauchen keine Bilddateien. Über "Als Kopie bearbeiten" lassen
-  sie sich mit eigenen Fotos und Aufnahmen umbauen.
+  Mitgelieferte Inhalte – bewusst altersneutral, damit sie für Kinder,
+  Jugendliche und Erwachsene passen. Sie sind als Vorlage gedacht:
+  "Als Kopie bearbeiten" und die Grafiken durch eigene Fotos ersetzen.
 */
 
-const PASTELS = ["#fde2e4", "#e2f0cb", "#cde7f0", "#fff1c1", "#e9dcf5", "#ffd9b8", "#d4f1e4"];
-
 function builtinPages(list) {
-  return list.map(([emoji, text], index) => ({
+  return list.map(([svg, text], index) => ({
     id: "p" + index,
-    emoji,
+    svg,
     text,
-    bg: PASTELS[index % PASTELS.length],
     image: null,
     audio: null,
     video: null
@@ -22,59 +17,45 @@ function builtinPages(list) {
 
 const BUILTIN_COLLECTIONS = [
   {
-    id: "bauernhof",
+    id: "kaffeepause",
     builtin: true,
-    name: "Auf dem Bauernhof",
+    name: "Kaffeepause",
     pages: builtinPages([
-      ["🐄", "Die Kuh macht Muuuh!"],
-      ["🐷", "Das Schwein macht Oink oink!"],
-      ["🐑", "Das Schaf macht Mäh!"],
-      ["🐓", "Der Hahn ruft Kikeriki!"],
-      ["🐴", "Das Pferd wiehert."],
-      ["🐶", "Der Hund bellt: Wau wau!"],
-      ["🐱", "Die Katze macht Miau!"]
+      ["uhr", "Zeit für einen Kaffee."],
+      ["wasserkocher", "Das Wasser kocht."],
+      ["filter", "Der Kaffee läuft durch."],
+      ["milch", "Ein Schuss Milch."],
+      ["umruehren", "Einmal umrühren."],
+      ["pause", "Und jetzt: Pause."]
     ])
   },
   {
-    id: "fahrzeuge",
+    id: "meer",
     builtin: true,
-    name: "Fahrzeuge",
+    name: "Ein Tag am Meer",
     pages: builtinPages([
-      ["🚗", "Das Auto fährt. Brumm brumm!"],
-      ["🚌", "Der Bus hält. Alle einsteigen!"],
-      ["🚒", "Die Feuerwehr kommt. Tatü tata!"],
-      ["🚜", "Der Traktor tuckert über das Feld."],
-      ["🚂", "Der Zug fährt. Tschu tschu!"],
-      ["✈️", "Das Flugzeug fliegt hoch in den Himmel."]
-    ])
-  },
-  {
-    id: "morgen",
-    builtin: true,
-    name: "Guten Morgen",
-    pages: builtinPages([
-      ["😴", "Ich schlafe noch."],
-      ["⏰", "Der Wecker klingelt!"],
-      ["🪥", "Ich putze die Zähne."],
-      ["👕", "Ich ziehe mich an."],
-      ["🥣", "Ich esse Frühstück."],
-      ["🚌", "Ich fahre zur Schule."],
-      ["👋", "Hallo! Guten Morgen!"]
+      ["auto", "Wir fahren ans Meer."],
+      ["sonne", "Die Sonne scheint."],
+      ["wellen", "Die Wellen rauschen."],
+      ["schiff", "Ein Schiff fährt vorbei."],
+      ["moewe", "Eine Möwe fliegt über das Wasser."],
+      ["untergang", "Die Sonne geht unter."]
     ])
   }
 ];
 
 /* Baustein 3: Aufbauen */
 const BUILD_VARIANTS = [
-  { id: "ballon", emoji: "🎈", name: "Ballon", note: "aufpumpen, bis er platzt" },
-  { id: "turm", emoji: "🧱", name: "Turm", note: "Steine stapeln, bis er umfällt" },
-  { id: "rakete", emoji: "🚀", name: "Rakete", note: "volltanken und abheben" }
+  { id: "ballon", svg: "ballon", name: "Ballon", note: "Aufpumpen, bis er platzt" },
+  { id: "domino", svg: "domino", name: "Domino", note: "Steine aufstellen – dann fällt die Reihe" },
+  { id: "rakete", svg: "rakete", name: "Rakete", note: "Volltanken und abheben" }
 ];
 
 /* Baustein 4: Effekt */
 const EFFECT_VARIANTS = [
-  { id: "feuerwerk", emoji: "🎆", name: "Feuerwerk", note: "jeder Druck eine Rakete" },
-  { id: "kleckse", emoji: "🎨", name: "Farbkleckse", note: "bunte Kleckse füllen das Bild" },
-  { id: "musik", emoji: "🎵", name: "Musik", note: "Ton für Ton: Alle meine Entchen" },
-  { id: "licht", emoji: "💡", name: "Lichter", note: "bunte Lichter gehen an" }
+  { id: "feuerwerk", svg: "feuerwerk", name: "Feuerwerk", note: "Jeder Druck eine Rakete" },
+  { id: "wellen", svg: "wellenkreise", name: "Wellen", note: "Tropfen fallen ins Wasser" },
+  { id: "polarlicht", svg: "polarlicht", name: "Polarlicht", note: "Lichtschleier am Himmel" },
+  { id: "lava", svg: "lavalampe", name: "Lavalampe", note: "Ruhige Formen kommen in Bewegung" },
+  { id: "musik", svg: "musik", name: "Musik", note: "Akkord für Akkord ein ruhiges Stück" }
 ];

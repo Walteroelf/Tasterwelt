@@ -6,7 +6,7 @@
   und bei jeder neuen Version erhöht werden – dann lädt der Browser die neue Fassung.
 */
 
-const VERSION = "1";
+const VERSION = "2";
 const APP_CACHE = "tasterwelt-app-" + VERSION;
 
 const APP_FILES = [
@@ -15,12 +15,13 @@ const APP_FILES = [
   "manifest.webmanifest",
   "icon-180.png",
   "icon-512.png",
-  "schriften/andika-400.woff2",
-  "schriften/andika-700.woff2",
-  "schriften/grandstander.woff2",
+  "schriften/atkinson-400.woff2",
+  "schriften/atkinson-700.woff2",
   "css/style.css?v=" + VERSION,
   "js/db.js?v=" + VERSION,
+  "js/illustrations.js?v=" + VERSION,
   "js/content.js?v=" + VERSION,
+  "js/theme.js?v=" + VERSION,
   "js/sound.js?v=" + VERSION,
   "js/fx.js?v=" + VERSION,
   "js/visual.js?v=" + VERSION,

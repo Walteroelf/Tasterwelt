@@ -2,22 +2,29 @@
   Baustein 3: Aufbauen.
 
   Jeder Druck baut ein Stück weiter. Nach der eingestellten Zahl von Drücken
-  (Einstellungen → Aufbauen) passiert das große Ereignis:
+  (Einstellungen → Bausteine) passiert das Ereignis:
   - Ballon: wird aufgepumpt und platzt
-  - Turm:   Steine stapeln sich und der Turm fällt um
+  - Domino: Steine werden aufgestellt, dann fällt die ganze Reihe
   - Rakete: wird betankt und hebt ab
+
+  Alles ist eine Vektorgrafik im Format 400 × 300, Farben aus der Farbwelt.
 */
 
-const BALLOON_COLORS = ["#e63946", "#3d7ab8", "#f2b531", "#2a9d8f", "#9b5de5", "#f15bb5", "#f4a261"];
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function svgEl(tag, attrs = {}) {
+  const el = document.createElementNS(SVG_NS, tag);
+  for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value);
+  return el;
+}
 
 function createBuildGame(variant) {
   const steps = () => Number(settings.steps) || 5;
-  let stage = null;
-  let wrap = null;
+  let svg = null;
   let count = 0;
   let busy = false;
-  let round = 0;
   const timers = [];
+  let flameTimer = null;
 
   function later(fn, ms) {
     timers.push(setTimeout(fn, ms));
@@ -25,237 +32,219 @@ function createBuildGame(variant) {
 
   /* ---------- Ballon ---------- */
 
-  let balloonBody = null;
-  let balloonSvg = null;
-  let pump = null;
+  let balloon = null;
 
   function setupBalloon() {
-    wrap.innerHTML = `
-      <svg class="balloon" viewBox="0 0 200 440" aria-hidden="true">
-        <path d="M100 236 C 92 300, 112 340, 100 440" stroke="#6b3f22" stroke-width="3" fill="none"/>
-        <g class="balloon-body">
-          <ellipse cx="100" cy="128" rx="82" ry="102" class="balloon-fill"/>
-          <path d="M90 236 L110 236 L100 222 Z" class="balloon-fill"/>
-          <ellipse cx="68" cy="82" rx="16" ry="30" fill="#fff" opacity=".45" transform="rotate(25 68 82)"/>
-        </g>
-      </svg>
-      <svg class="pump" viewBox="0 0 160 120" aria-hidden="true">
-        <g class="pump-handle">
-          <rect x="40" y="4" width="80" height="14" rx="7" fill="#6b3f22"/>
-          <rect x="74" y="16" width="12" height="40" fill="#8a6a52"/>
-        </g>
-        <rect x="56" y="50" width="48" height="66" rx="10" fill="#3d7ab8" stroke="#6b3f22" stroke-width="5"/>
-      </svg>
-      <div class="press-hint">Drück den Taster!</div>`;
-
-    balloonSvg = wrap.querySelector(".balloon");
-    balloonBody = wrap.querySelector(".balloon-body");
-    pump = wrap.querySelector(".pump");
+    svg.innerHTML = `
+      <path class="sb" d="M200 204 C192 232 210 262 200 320" stroke-width="2"/>
+      <g class="balloon-body">
+        <ellipse class="a" cx="200" cy="134" rx="54" ry="66"/>
+        <path class="a" d="M192 206 L208 206 L200 196 Z"/>
+        <ellipse class="k" cx="180" cy="108" rx="8" ry="18" transform="rotate(25 180 108)" opacity=".3"/>
+      </g>`;
+    balloon = svg.querySelector(".balloon-body");
     newBalloon();
   }
 
   function newBalloon() {
-    const color = BALLOON_COLORS[round % BALLOON_COLORS.length];
-    balloonSvg.querySelectorAll(".balloon-fill").forEach(el => el.setAttribute("fill", color));
-    balloonBody.style.transition = "none";
-    balloonBody.style.opacity = "1";
-    balloonBody.style.transform = "scale(0.22)";
-    balloonBody.getBoundingClientRect();
-    balloonBody.style.transition = "";
     count = 0;
+    balloon.style.transition = "none";
+    balloon.style.opacity = "1";
+    balloon.style.transform = "scale(0.2)";
+    balloon.getBoundingClientRect();
+    balloon.style.transition = "";
   }
 
   function pressBalloon() {
     count++;
     const progress = count / steps();
-    wrap.querySelector(".press-hint")?.remove();
-
-    pump.classList.add("push");
-    later(() => pump.classList.remove("push"), 200);
     Sounds.pump(progress);
 
     if (count < steps()) {
-      balloonBody.style.transform = `scale(${0.22 + 0.78 * progress})`;
-      balloonSvg.classList.remove("wobble");
-      balloonSvg.getBoundingClientRect();
-      balloonSvg.classList.add("wobble");
+      balloon.style.transform = `scale(${0.2 + 0.85 * progress})`;
       return;
     }
 
-    // Letzter Druck: noch etwas größer – dann Peng!
     busy = true;
-    balloonBody.style.transform = "scale(1.12)";
+    balloon.style.transform = "scale(1.15)";
     later(() => {
-      const c = centerOf(balloonBody);
-      balloonBody.style.transition = "none";
-      balloonBody.style.opacity = "0";
+      const c = centerOf(balloon);
+      balloon.style.transition = "none";
+      balloon.style.opacity = "0";
       Sounds.pop();
-      Fx.confetti(c.x, c.y, 140);
-      speak("Peng!");
-    }, 450);
+      Fx.burst(c.x, c.y, 90, currentTheme().a);
+    }, 600);
     later(() => {
-      round++;
       newBalloon();
       busy = false;
     }, 2200);
   }
 
-  /* ---------- Turm ---------- */
+  /* ---------- Domino ---------- */
 
-  let blocks = [];
+  let dominos = [];
 
-  function setupTower() {
-    wrap.innerHTML = `<div class="ground"></div><div class="press-hint">Drück den Taster!</div>`;
-    blocks = [];
+  function setupDomino() {
+    svg.innerHTML = `<rect class="c" x="-400" y="250" width="1200" height="3" rx="1.5"/>`;
+    dominos = [];
     count = 0;
   }
 
-  function pressTower() {
-    wrap.querySelector(".press-hint")?.remove();
+  function dominoX(i, total) {
+    const spacing = total > 1 ? Math.min(46, 280 / (total - 1)) : 0;
+    const width = spacing * (total - 1);
+    return 200 - width / 2 + i * spacing - 8;
+  }
+
+  function pressDomino() {
+    const total = steps();
     count++;
 
-    const total = steps();
-    const blockHeight = Math.min(14, 66 / total);   // in vh
-    const block = document.createElement("div");
-    block.className = "tower-block drop";
-    block.style.height = blockHeight + "vh";
-    block.style.width = "30vh";
-    block.style.marginLeft = (-15 + (Math.random() - 0.5) * 3) + "vh";
-    block.style.bottom = (8 + (count - 1) * blockHeight) + "vh";
-    block.style.background = BALLOON_COLORS[(count + round) % BALLOON_COLORS.length];
-    wrap.appendChild(block);
-    blocks.push(block);
-
-    later(() => Sounds.knock(), 380);
+    const g = svgEl("g", { class: "domino up" });
+    const x = dominoX(count - 1, total);
+    g.appendChild(svgEl("rect", { class: "a", x, y: 180, width: 16, height: 70, rx: 2 }));
+    g.appendChild(svgEl("circle", { class: "k", cx: x + 8, cy: 200, r: 2.6 }));
+    g.appendChild(svgEl("circle", { class: "k", cx: x + 8, cy: 230, r: 2.6 }));
+    svg.appendChild(g);
+    dominos.push(g);
+    Sounds.place(count - 1);
 
     if (count < total) return;
 
+    // Die Reihe fällt – Stein für Stein
     busy = true;
     later(() => {
-      Sounds.crash();
-      speak("Bumm!");
-      const direction = Math.random() < 0.5 ? -1 : 1;
-      blocks.forEach((b, i) => {
-        const height = i / blocks.length;
-        b.style.transitionDelay = (0.25 * (1 - height)) + "s";
-        b.style.transform = `translate(${direction * (20 + height * 60)}vw, ${10 + Math.random() * 10}vh) rotate(${direction * (60 + Math.random() * 80)}deg)`;
-        b.style.opacity = "0";
+      dominos.forEach((d, i) => {
+        later(() => {
+          d.classList.remove("up");
+          d.style.transform = `rotate(${i === dominos.length - 1 ? 84 : 62}deg)`;
+          Sounds.clack();
+        }, i * 130);
       });
-    }, 900);
+    }, 500);
+
+    const fallen = 500 + dominos.length * 130;
     later(() => {
-      blocks.forEach(b => b.remove());
-      blocks = [];
-      count = 0;
-      round++;
+      const last = dominos[dominos.length - 1].getBoundingClientRect();
+      Fx.burst(last.right, last.bottom, 24, currentTheme().b);
+    }, fallen);
+    later(() => dominos.forEach(d => { d.style.opacity = "0"; }), fallen + 1200);
+    later(() => {
+      setupDomino();
       busy = false;
-    }, 2700);
+    }, fallen + 2100);
   }
 
   /* ---------- Rakete ---------- */
 
   let rocket = null;
-  let fuel = null;
-  let flameTimer = null;
+  let cells = [];
 
   function setupRocket() {
-    wrap.innerHTML = `
-      <div class="sky">
-        <div class="press-hint">Drück den Taster!</div>
-      </div>
-      <div class="ground"></div>
-      <div class="rocket"><span class="rocket-inner">🚀</span></div>
-      <div class="fuel"></div>`;
+    svg.innerHTML = `<rect class="c" x="-400" y="262" width="1200" height="3" rx="1.5"/>`;
 
-    // Ein paar Sterne
-    const sky = wrap.querySelector(".sky");
-    for (let i = 0; i < 40; i++) {
-      const star = document.createElement("span");
-      const size = 2 + Math.random() * 3;
-      star.style.cssText = `position:absolute;left:${Math.random() * 100}%;top:${Math.random() * 60}%;width:${size}px;height:${size}px;border-radius:50%;background:#fff;opacity:${0.4 + Math.random() * 0.6}`;
-      sky.appendChild(star);
+    // Sterne
+    for (let i = 0; i < 46; i++) {
+      svg.appendChild(svgEl("circle", {
+        class: "b",
+        cx: -200 + Math.random() * 800,
+        cy: Math.random() * 220,
+        r: 0.6 + Math.random() * 1.4,
+        opacity: 0.25 + Math.random() * 0.5
+      }));
     }
 
-    rocket = wrap.querySelector(".rocket");
-    fuel = wrap.querySelector(".fuel");
+    rocket = svgEl("g", { class: "rocket-group" });
+    rocket.innerHTML = `
+      <path class="a" d="M200 120 C222 142 226 196 218 232 L182 232 C174 196 178 142 200 120 Z"/>
+      <circle class="k" cx="200" cy="172" r="11"/><circle class="b" cx="200" cy="172" r="6"/>
+      <path class="c" d="M182 204 L164 240 L184 232 Z M218 204 L236 240 L216 232 Z"/>
+      <rect class="c" x="190" y="232" width="20" height="8" rx="2"/>`;
+    svg.appendChild(rocket);
+
     resetFuel();
   }
 
   function resetFuel() {
+    cells.forEach(c => c.remove());
+    cells = [];
     count = 0;
-    fuel.innerHTML = "";
-    for (let i = 0; i < steps(); i++) fuel.appendChild(document.createElement("span"));
+    const total = steps();
+    const cellHeight = Math.min(16, 130 / total - 4);
+    for (let i = 0; i < total; i++) {
+      const cell = svgEl("rect", { class: "a fuel-cell", x: 300, y: 250 - (i + 1) * (cellHeight + 4), width: 22, height: cellHeight, rx: 3, opacity: 0.15 });
+      svg.appendChild(cell);
+      cells.push(cell);
+    }
   }
 
-  function rocketBottom() {
+  function rocketNozzle() {
     const r = rocket.getBoundingClientRect();
-    return { x: r.left + r.width / 2, y: r.bottom - r.height * 0.1 };
+    return { x: r.left + r.width / 2, y: r.bottom };
   }
 
   function pressRocket() {
-    wrap.querySelector(".press-hint")?.remove();
-    if (fuel.children.length !== steps()) resetFuel();
+    if (cells.length !== steps()) resetFuel();
 
     count++;
-    fuel.children[count - 1].classList.add("full");
+    cells[count - 1].setAttribute("opacity", "1");
 
     rocket.classList.remove("shake");
     rocket.getBoundingClientRect();
     rocket.classList.add("shake");
     Sounds.rumble();
-    const b = rocketBottom();
-    Fx.smoke(b.x, b.y, 8);
+    const n = rocketNozzle();
+    Fx.smoke(n.x, n.y, 6);
 
     if (count < steps()) return;
 
     busy = true;
-    speak("Drei, zwei, eins, los!");
     later(() => {
       Sounds.liftoff();
       rocket.classList.remove("shake");
-      rocket.classList.add("launch");
-      const p = rocketBottom();
-      Fx.smoke(p.x, p.y, 30);
+      rocket.style.transform = "translateY(-460px)";
+      const p = rocketNozzle();
+      Fx.smoke(p.x, p.y, 26);
       flameTimer = setInterval(() => {
-        const f = rocketBottom();
+        const f = rocketNozzle();
         Fx.flame(f.x, f.y);
-      }, 50);
-    }, 1400);
+      }, 45);
+    }, 700);
     later(() => {
       clearInterval(flameTimer);
       const w = window.innerWidth;
       const h = window.innerHeight;
-      Fx.firework(w * 0.3, h * 0.25);
-      later(() => Fx.firework(w * 0.7, h * 0.2), 300);
-      Sounds.bang();
-    }, 3000);
+      Fx.firework(w * 0.36, h * 0.24);
+      later(() => Fx.firework(w * 0.62, h * 0.18), 260);
+      Sounds.burst();
+    }, 2700);
     later(() => {
-      // Neue Rakete kommt von unten auf die Startrampe
-      rocket.classList.remove("launch");
-      rocket.classList.add("back");
+      rocket.style.transition = "none";
+      rocket.style.transform = "translateY(240px)";
       rocket.getBoundingClientRect();
-      rocket.style.transition = "transform 1s ease-out";
-      rocket.classList.remove("back");
-      resetFuel();
-    }, 4200);
+      rocket.style.transition = "transform 1.4s cubic-bezier(.2,.8,.3,1)";
+      rocket.style.transform = "";
+      cells.forEach(c => c.setAttribute("opacity", "0.15"));
+    }, 4300);
     later(() => {
       rocket.style.transition = "";
+      count = 0;
       busy = false;
-    }, 5300);
+    }, 5800);
   }
 
   /* ---------- gemeinsam ---------- */
 
-  const setup = { ballon: setupBalloon, turm: setupTower, rakete: setupRocket };
-  const press = { ballon: pressBalloon, turm: pressTower, rakete: pressRocket };
+  const setup = { ballon: setupBalloon, domino: setupDomino, rakete: setupRocket };
+  const press = { ballon: pressBalloon, domino: pressDomino, rakete: pressRocket };
 
   return {
-    title: BUILD_VARIANTS.find(v => v.id === variant).name,
-
     start(stageElement) {
-      stage = stageElement;
-      wrap = document.createElement("div");
+      const wrap = document.createElement("div");
       wrap.className = "build-wrap";
-      stage.appendChild(wrap);
+      svg = svgEl("svg", { class: "build-svg ill", viewBox: "0 0 400 300", preserveAspectRatio: "xMidYMid meet" });
+      wrap.appendChild(svg);
+      stageElement.appendChild(wrap);
       setup[variant]();
     },
 

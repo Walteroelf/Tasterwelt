@@ -100,6 +100,8 @@ const form = {
   lockMs: document.getElementById("lockSelect"),
   reminder: document.getElementById("reminderSelect"),
   pressDot: document.getElementById("pressDotToggle"),
+  theme: document.getElementById("themeSelect"),
+  showText: document.getElementById("showTextToggle"),
   speech: document.getElementById("speechToggle"),
   rate: document.getElementById("rateSelect"),
   sounds: document.getElementById("soundsToggle"),
@@ -156,6 +158,7 @@ for (const [name, input] of Object.entries(form)) {
     saveSettings();
     applySettingsToForm();
     document.body.classList.toggle("calm", settings.calm);
+    if (name === "theme") applyTheme();
     if (name === "reminder") restartReminder();
   });
 }
@@ -166,7 +169,7 @@ function openSettingsScreen() {
   applySettingsToForm();
   updateOfflineStatus();
   document.getElementById("settingsEndButton").classList.toggle("hidden", !activeGame);
-  document.getElementById("switchTestText").textContent = "Taster testen: Jetzt einmal drücken …";
+  document.getElementById("switchTestText").textContent = "Taster testen – jetzt einmal drücken";
   settingsScreen.classList.remove("hidden");
   settingsScreen.querySelector(".modal").scrollTop = 0;
   if (document.activeElement) document.activeElement.blur();

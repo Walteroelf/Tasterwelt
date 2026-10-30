@@ -1,201 +1,247 @@
 /*
   Baustein 4: Effekt – jeder Druck löst sofort etwas aus.
 
-  - Feuerwerk:   eine Rakete steigt auf und explodiert
-  - Farbkleckse: ein bunter Klecks erscheint, bis das Bild voll ist
-  - Musik:       Ton für Ton "Alle meine Entchen" auf dem Xylophon
-  - Lichter:     bunte Lichter leuchten
-  - Überraschung (eigene Sammlung): ein zufälliges Bild springt herein
+  - Feuerwerk:  eine Rakete steigt auf und zerplatzt
+  - Wellen:     ein Tropfen fällt, Ringe breiten sich aus
+  - Polarlicht: Lichtschleier leuchten auf, dazu eine Klangfläche
+  - Lavalampe:  ruhige Formen kommen in Bewegung und leuchten
+  - Musik:      Akkord für Akkord ein ruhiges Stück (Cmaj7 – Am7 – Fmaj7 – G6)
+  - Überraschung (Sammlung): ein zufälliges Bild erscheint
 
-  Halten-Modus (Einstellungen → Effekt): Feuerwerk, Musik und Lichter laufen
-  nur, solange der Taster gedrückt bleibt.
+  Halten-Modus (Einstellungen → Bausteine): Der Effekt läuft nur, solange
+  der Taster gedrückt bleibt. Sonst klingt er nach einem Druck von selbst aus.
 */
 
-const XYLO_NOTES = ["C4", "D4", "E4", "F4", "G4", "A4", "H4", "C5"];
-const XYLO_COLORS = ["#e63946", "#f4a261", "#f2b531", "#8ac926", "#2a9d8f", "#3d7ab8", "#9b5de5", "#f15bb5"];
-
-/* Alle meine Entchen – Silbe und Ton, Zeile für Zeile */
-const SONG = [
-  [["Al-", "C4"], ["le ", "D4"], ["mei-", "E4"], ["ne ", "F4"], ["Ent-", "G4"], ["chen", "G4"]],
-  [["schwim-", "A4"], ["men ", "A4"], ["auf ", "A4"], ["dem ", "A4"], ["See,", "G4"]],
-  [["schwim-", "A4"], ["men ", "A4"], ["auf ", "A4"], ["dem ", "A4"], ["See.", "G4"]],
-  [["Köpf-", "F4"], ["chen ", "F4"], ["in ", "F4"], ["das ", "F4"], ["Was-", "E4"], ["ser,", "E4"]],
-  [["Schwänz-", "D4"], ["chen ", "D4"], ["in ", "D4"], ["die ", "D4"], ["Höh.", "C4"]]
-];
-
 function createEffectGame(variant, collection) {
-  let stage = null;
   let wrap = null;
+  let canvas = null;
+  let ctx = null;
+  let raf = null;
   let holdTimer = null;
-  let holding = false;
+  let decayTimer = null;
+  let padSound = null;
+  let energy = 0.12;
+  let target = 0.12;
+  let time = 0;
   const timers = [];
 
   function later(fn, ms) {
     timers.push(setTimeout(fn, ms));
   }
 
-  function removeHint() {
-    wrap.querySelector(".press-hint")?.remove();
-  }
-
-  /* Wiederholt eine Aktion, solange der Taster gehalten wird */
+  /* Aktion sofort – im Halten-Modus wiederholt, bis losgelassen wird */
   function repeatWhileHeld(action, interval) {
     action();
     if (!settings.hold) return;
-    holding = true;
     clearInterval(holdTimer);
-    holdTimer = setInterval(() => { if (holding) action(); }, interval);
+    holdTimer = setInterval(action, interval);
   }
 
   function stopHold() {
-    holding = false;
     clearInterval(holdTimer);
+  }
+
+  /* ---------- Zeichenfläche für Polarlicht und Lavalampe ---------- */
+
+  function setupCanvas() {
+    canvas = document.createElement("canvas");
+    canvas.className = "effect-canvas";
+    wrap.appendChild(canvas);
+    ctx = canvas.getContext("2d");
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+  }
+
+  function resizeCanvas() {
+    if (!canvas) return;
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = canvas.clientWidth * ratio;
+    canvas.height = canvas.clientHeight * ratio;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+
+  function loop(draw) {
+    const step = () => {
+      energy += (target - energy) * (settings.calm ? 0.02 : 0.045);
+      time += 0.016 * (0.3 + energy * 1.4) * (settings.calm ? 0.5 : 1);
+      draw(canvas.clientWidth, canvas.clientHeight);
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+
+  /* Leuchten an: Klangfläche starten bzw. heller machen */
+  function glowOn(notes) {
+    target = 1;
+    if (!padSound) padSound = pad(notes, { volume: 0.06, attack: 0.6, cutoff: 500 });
+    padSound.swell(1);
+
+    clearTimeout(decayTimer);
+    if (!settings.hold) decayTimer = setTimeout(glowOff, 2600);
+  }
+
+  function glowOff() {
+    target = 0.12;
+    if (padSound) {
+      padSound.stop(1.8);
+      padSound = null;
+    }
+  }
+
+  /* ---------- Polarlicht ---------- */
+
+  /* Lichtvorhänge: Unterkante als Welle, darüber senkrechte Strahlen,
+     die nach oben ausblenden – wie echtes Polarlicht */
+  const rays = Array.from({ length: 3 }, () => {
+    const raw = Array.from({ length: 400 }, () => Math.random());
+    // geglättet, damit weiche Strahlenbündel statt Streifen entstehen
+    return raw.map((_, i) => {
+      let sum = 0;
+      for (let k = -4; k <= 4; k++) sum += raw[(i + k + 400) % 400];
+      return 0.35 + (sum / 9) * 0.9;
+    });
+  });
+
+  function drawAurora(w, h) {
+    ctx.clearRect(0, 0, w, h);
+    const t = currentTheme();
+    ctx.globalCompositeOperation = settings.theme === "hell" ? "multiply" : "lighter";
+    const step = 5;
+
+    [t.b, t.a, t.c].forEach((color, band) => {
+      const base = h * (0.5 + band * 0.1);
+      const height = h * (0.18 + energy * 0.22);
+      const strength = 0.03 + energy * 0.22;
+
+      for (let i = 0, x = 0; x <= w; i++, x += step) {
+        const edge = base +
+          Math.sin(x * 0.005 + time * (0.7 + band * 0.25) + band * 2) * h * 0.08 +
+          Math.sin(x * 0.012 - time * 1.1 + band) * h * 0.025;
+        const shimmer = 0.7 + 0.18 * Math.sin(time * 2 + i * 0.11 + band) + 0.12 * Math.sin(time * 3.7 - i * 0.047);
+        const length = height * rays[band][i % 400] * shimmer;
+
+        const gradient = ctx.createLinearGradient(0, edge - length, 0, edge);
+        gradient.addColorStop(0, withAlpha(color, 0));
+        gradient.addColorStop(0.85, withAlpha(color, strength));
+        gradient.addColorStop(1, withAlpha(color, strength * 0.4));
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x, edge - length, step + 1, length);
+      }
+    });
+
+    ctx.globalCompositeOperation = "source-over";
+  }
+
+  /* ---------- Lavalampe ---------- */
+
+  let blobs = [];
+
+  function setupLava() {
+    const t = currentTheme();
+    const colors = [t.a, t.c, t.b, t.a, t.c, t.a, t.b];
+    blobs = colors.map(color => ({
+      x: Math.random(),
+      y: Math.random(),
+      vx: (Math.random() - 0.5) * 0.002,
+      vy: (Math.random() - 0.5) * 0.003,
+      r: 0.08 + Math.random() * 0.1,
+      color
+    }));
+  }
+
+  function drawLava(w, h) {
+    ctx.clearRect(0, 0, w, h);
+    ctx.globalCompositeOperation = settings.theme === "hell" ? "multiply" : "lighter";
+    const speed = 0.25 + energy * 3;
+    const size = Math.min(w, h);
+
+    blobs.forEach((b, i) => {
+      b.x += b.vx * speed;
+      b.y += b.vy * speed + Math.sin(time + i) * 0.0004 * speed;
+      if (b.x < 0.05 || b.x > 0.95) b.vx *= -1;
+      if (b.y < 0.08 || b.y > 0.92) b.vy *= -1;
+
+      const r = size * b.r * (0.85 + energy * 0.35 + Math.sin(time * 1.4 + i) * 0.06);
+      const x = b.x * w;
+      const y = b.y * h;
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
+      gradient.addColorStop(0, withAlpha(b.color, 0.25 + energy * 0.6));
+      gradient.addColorStop(0.55, withAlpha(b.color, 0.12 + energy * 0.35));
+      gradient.addColorStop(1, withAlpha(b.color, 0));
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    ctx.globalCompositeOperation = "source-over";
   }
 
   /* ---------- Feuerwerk ---------- */
 
-  function fireworkSetup() {
-    wrap.classList.add("night");
-    wrap.innerHTML = `<div class="press-hint">Drück den Taster!</div>`;
-  }
-
   function launchFirework() {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    const x = w * (0.15 + Math.random() * 0.7);
-    const y = h * (0.15 + Math.random() * 0.35);
-    Sounds.whistle();
-    Fx.rocket(x, y, (bx, by) => {
-      Fx.firework(bx, by);
-      Sounds.bang();
+    Sounds.launch();
+    Fx.rocket(w * (0.2 + Math.random() * 0.6), h * (0.18 + Math.random() * 0.3), (x, y) => {
+      Fx.firework(x, y);
+      Sounds.burst();
     });
   }
 
-  /* ---------- Farbkleckse ---------- */
+  /* ---------- Wellen ---------- */
 
-  let blobs = [];
-
-  function blobSetup() {
-    wrap.innerHTML = `<div class="press-hint">Drück den Taster!</div>`;
-    blobs = [];
-  }
-
-  function addBlob() {
-    if (blobs.length >= 14) {
-      // Bild ist voll: alles verblasst, dann geht es von vorn los
-      blobs.forEach(b => { b.style.opacity = "0"; });
-      const old = blobs;
-      blobs = [];
-      later(() => old.forEach(b => b.remove()), 900);
-    }
-
-    const size = 16 + Math.random() * 18;   // vmin
-    const blob = document.createElement("div");
-    blob.className = "blob";
-    blob.style.width = size + "vmin";
-    blob.style.height = size * (0.8 + Math.random() * 0.4) + "vmin";
-    blob.style.left = `calc(${Math.random() * 100}% - ${size / 2}vmin)`;
-    blob.style.top = `calc(${8 + Math.random() * 84}% - ${size / 2}vmin)`;
-    blob.style.background = FX_COLORS[Math.floor(Math.random() * FX_COLORS.length)];
-    blob.style.setProperty("--r", Math.round(Math.random() * 360) + "deg");
-    wrap.appendChild(blob);
-    blobs.push(blob);
-    Sounds.splat();
+  function dropWave() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const x = w * (0.3 + Math.random() * 0.4);
+    const y = h * (0.35 + Math.random() * 0.35);
+    Fx.ripple(x, y, randomParticleColor(), 4);
+    Fx.burst(x, y, 10, currentTheme().text);
+    Sounds.drop();
   }
 
   /* ---------- Musik ---------- */
 
-  let bars = [];
-  let songLine = null;
-  let line = 0;
-  let syllable = 0;
+  let disc = null;
+  let chordIndex = 0;
+  let noteStep = 0;
 
-  function musicSetup() {
-    wrap.innerHTML = `<div class="song-line"></div><div class="xylophone"></div>`;
-    songLine = wrap.querySelector(".song-line");
-    const xylo = wrap.querySelector(".xylophone");
-    bars = XYLO_NOTES.map((note, i) => {
-      const bar = document.createElement("div");
-      bar.className = "xylo-bar";
-      bar.style.background = XYLO_COLORS[i];
-      bar.style.height = (100 - i * 6) + "%";
-      xylo.appendChild(bar);
-      return bar;
-    });
-    line = 0;
-    syllable = -1;
-    showSongLine();
+  function setupMusic() {
+    disc = document.createElement("div");
+    disc.style.cssText = "position:absolute;left:50%;top:50%;width:26vmin;height:26vmin;margin:-13vmin 0 0 -13vmin;border-radius:50%;background:var(--st-a);opacity:.9;transition:transform .5s cubic-bezier(.2,1.4,.4,1), background .6s";
+    wrap.appendChild(disc);
   }
 
-  function showSongLine() {
-    songLine.innerHTML = "";
-    SONG[line].forEach(([text], i) => {
-      const span = document.createElement("span");
-      span.textContent = text;
-      span.style.whiteSpace = "pre";
-      span.style.opacity = i <= syllable ? "1" : "0.3";
-      songLine.appendChild(span);
-    });
+  function pulse(scale) {
+    const t = currentTheme();
+    disc.style.background = [t.a, t.b, t.c, t.a][chordIndex % 4];
+    disc.style.transition = "none";
+    disc.style.transform = `scale(${scale})`;
+    disc.getBoundingClientRect();
+    disc.style.transition = "";
+    disc.style.transform = "scale(1)";
+    const c = centerOf(disc);
+    Fx.ripple(c.x, c.y, disc.style.background, 2);
   }
 
-  function playNote() {
-    syllable++;
-    if (syllable >= SONG[line].length) {
-      line = (line + 1) % SONG.length;
-      syllable = 0;
-      if (line === 0) Fx.rain(60);
-    }
-
-    const [, note] = SONG[line][syllable];
-    const i = XYLO_NOTES.indexOf(note);
-    Sounds.xylo(NOTE[note]);
-
-    const bar = bars[i];
-    bar.classList.add("hit");
-    later(() => bar.classList.remove("hit"), 220);
-    showSongLine();
+  function playChord() {
+    Sounds.chord(chordIndex);
+    pulse(1.25);
+    chordIndex = (chordIndex + 1) % 4;
   }
 
-  /* ---------- Lichter ---------- */
-
-  let lights = null;
-  let hum = null;
-  let lightTimer = null;
-
-  function lightSetup() {
-    wrap.classList.add("night");
-    wrap.innerHTML = `<div class="lights"></div><div class="press-hint">Drück den Taster!</div>`;
-    lights = wrap.querySelector(".lights");
-    ["#ff595e", "#ffca3a", "#8ac926", "#1982c4", "#6a4c93", "#f15bb5"].forEach((color, i) => {
-      const light = document.createElement("div");
-      light.className = "light";
-      light.style.setProperty("--c", color);
-      light.style.setProperty("--d", (i * 0.2) + "s");
-      lights.appendChild(light);
-    });
-  }
-
-  function lightsOn() {
-    if (!lights.classList.contains("on")) {
-      lights.classList.add("on");
-      hum = Sounds.hum();
-    }
-  }
-
-  function lightsOff() {
-    lights.classList.remove("on");
-    if (hum) hum.stop();
-    hum = null;
+  function playHeldNote() {
+    Sounds.chordNote(chordIndex, noteStep);
+    pulse(1.1);
+    noteStep++;
+    if (noteStep % 8 === 0) chordIndex = (chordIndex + 1) % 4;
   }
 
   /* ---------- Überraschung ---------- */
 
   let queue = [];
   let shown = null;
-
-  function surpriseSetup() {
-    wrap.innerHTML = `<div class="press-hint">Drück den Taster!</div>`;
-  }
 
   function nextSurprise() {
     if (queue.length === 0) queue = shuffle(collection.pages);
@@ -206,21 +252,12 @@ function createEffectGame(variant, collection) {
 
     shown = document.createElement("div");
     shown.className = "surprise";
-    shown.style.background = page.image ? "var(--buehne)" : (page.bg || "var(--buehne)");
-    shown.appendChild(makeVisual(page));
-    if (page.text) {
-      const p = document.createElement("p");
-      p.className = "story-text";
-      p.textContent = page.text;
-      shown.appendChild(p);
-    }
+    const visual = makeVisual(page);
+    if (visual) shown.appendChild(visual);
+    if (page.text && (settings.showText || !visual)) shown.appendChild(textElement(page.text, !visual));
     wrap.appendChild(shown);
 
-    Sounds.chime();
-    later(() => {
-      const c = centerOf(shown.querySelector(".story-visual"));
-      Fx.confetti(c.x, c.y, 50);
-    }, 350);
+    Sounds.appear();
     sayPage(page);
   }
 
@@ -228,34 +265,42 @@ function createEffectGame(variant, collection) {
 
   const handlers = {
     feuerwerk: {
-      setup: fireworkSetup,
-      press: () => repeatWhileHeld(launchFirework, 450),
+      setup() {},
+      press: () => repeatWhileHeld(launchFirework, 520),
       release: stopHold
     },
-    kleckse: {
-      setup: blobSetup,
-      press: addBlob,
-      release() {}
+    wellen: {
+      setup() {},
+      press: () => repeatWhileHeld(dropWave, 480),
+      release: stopHold
+    },
+    polarlicht: {
+      setup() { setupCanvas(); loop(drawAurora); },
+      press: () => glowOn([48, 55, 59, 64]),
+      release() { if (settings.hold) glowOff(); }
+    },
+    lava: {
+      setup() { setupCanvas(); setupLava(); loop(drawLava); },
+      press: () => glowOn([45, 52, 57, 60]),
+      release() { if (settings.hold) glowOff(); }
     },
     musik: {
-      setup: musicSetup,
-      press: () => repeatWhileHeld(playNote, 380),
-      release: stopHold
-    },
-    licht: {
-      setup: lightSetup,
+      setup: setupMusic,
       press() {
-        lightsOn();
-        clearTimeout(lightTimer);
-        // Ohne Halten-Modus: Licht bleibt 3 Sekunden an
-        if (!settings.hold) lightTimer = setTimeout(lightsOff, 3000);
+        if (settings.hold) {
+          noteStep = 0;
+          repeatWhileHeld(playHeldNote, 300);
+        } else {
+          playChord();
+        }
       },
       release() {
-        if (settings.hold) lightsOff();
+        if (settings.hold && noteStep > 0) chordIndex = (chordIndex + 1) % 4;
+        stopHold();
       }
     },
     ueberraschung: {
-      setup: surpriseSetup,
+      setup() {},
       press: nextSurprise,
       release() {}
     }
@@ -264,20 +309,14 @@ function createEffectGame(variant, collection) {
   const handler = handlers[variant];
 
   return {
-    title: variant === "ueberraschung"
-      ? collection.name + " – Überraschung"
-      : EFFECT_VARIANTS.find(v => v.id === variant).name,
-
     start(stageElement) {
-      stage = stageElement;
       wrap = document.createElement("div");
       wrap.className = "effect-wrap";
-      stage.appendChild(wrap);
+      stageElement.appendChild(wrap);
       handler.setup();
     },
 
     press() {
-      removeHint();
       handler.press();
     },
 
@@ -288,8 +327,11 @@ function createEffectGame(variant, collection) {
     stop() {
       stopHold();
       timers.forEach(clearTimeout);
-      clearTimeout(lightTimer);
-      if (hum) hum.stop();
+      clearTimeout(decayTimer);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resizeCanvas);
+      if (padSound) padSound.stop(0.4);
+      padSound = null;
       stopVoice();
     }
   };
