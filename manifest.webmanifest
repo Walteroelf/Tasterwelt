@@ -1,0 +1,14 @@
+{
+  "name": "Tasterwelt – Ursache und Wirkung mit dem Taster",
+  "short_name": "Tasterwelt",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e8f1f6",
+  "theme_color": "#d9473b",
+  "lang": "de",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
