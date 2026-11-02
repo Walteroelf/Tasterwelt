@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-title" content="Tasterwelt" />
   <meta name="theme-color" content="#f4f1ea" />
 
-  <link rel="stylesheet" href="css/style.css?v=2" />
+  <link rel="stylesheet" href="css/style.css?v=3" />
 </head>
 
 <body>
@@ -273,9 +273,31 @@
         <h3>Ton</h3>
 
         <label class="toggle">
-          <span><strong>Texte vorlesen</strong><small>Eigene Aufnahmen laufen immer. Sonst liest die Gerätestimme.</small></span>
+          <span><strong>Texte vorlesen</strong><small>Eigene Sprachaufnahmen haben immer Vorrang.</small></span>
           <input type="checkbox" id="speechToggle" />
         </label>
+
+        <label class="toggle">
+          <span><strong>Natürliche Stimme für die Vorlagen</strong><small>Thorsten-Voice – vorab aufgenommen, klingt deutlich besser als die Gerätestimme.</small></span>
+          <input type="checkbox" id="naturalVoiceToggle" />
+        </label>
+
+        <div class="field-row">
+          <label for="voiceSelect">Gerätestimme für eigene Texte</label>
+          <select id="voiceSelect"></select>
+        </div>
+        <div class="button-row">
+          <button id="voiceTestButton" class="small">Probe hören</button>
+        </div>
+        <details class="hint">
+          <summary>Bessere Gerätestimme auf dem iPad</summary>
+          <p>
+            Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Deutsch.
+            Dort z. B. <strong>Anna (Erweitert)</strong>, <strong>Helena (Erweitert)</strong> oder eine <strong>Siri-Stimme</strong> laden.
+            Danach die App neu öffnen und oben die Stimme auswählen.
+            Am natürlichsten bleibt aber eine eigene Sprachaufnahme pro Seite.
+          </p>
+        </details>
 
         <div class="field-row">
           <label for="rateSelect">Sprechtempo</label>
@@ -339,26 +361,28 @@
         <button id="settingsCloseButton" class="primary">Fertig</button>
         <button id="settingsEndButton" class="hidden">Übung beenden</button>
         <span class="platz"></span>
-        <span class="footnote">Tasterwelt · Version 2</span>
+        <span class="footnote">Tasterwelt · Version 3</span>
       </div>
     </div>
   </div>
 
-  <script src="js/db.js?v=2"></script>
-  <script src="js/illustrations.js?v=2"></script>
-  <script src="js/content.js?v=2"></script>
-  <script src="js/theme.js?v=2"></script>
-  <script src="js/sound.js?v=2"></script>
-  <script src="js/fx.js?v=2"></script>
-  <script src="js/visual.js?v=2"></script>
-  <script src="js/story.js?v=2"></script>
-  <script src="js/reveal.js?v=2"></script>
-  <script src="js/build.js?v=2"></script>
-  <script src="js/effect.js?v=2"></script>
-  <script src="js/app.js?v=2"></script>
-  <script src="js/switch.js?v=2"></script>
-  <script src="js/editor.js?v=2"></script>
-  <script src="js/teacher.js?v=2"></script>
-  <script src="js/offline.js?v=2"></script>
+  <script src="js/db.js?v=3"></script>
+  <script src="js/illustrations.js?v=3"></script>
+  <script src="js/content.js?v=3"></script>
+  <script src="js/theme.js?v=3"></script>
+  <script src="js/klang.js?v=3"></script>
+  <script src="js/voice.js?v=3"></script>
+  <script src="js/sound.js?v=3"></script>
+  <script src="js/fx.js?v=3"></script>
+  <script src="js/visual.js?v=3"></script>
+  <script src="js/story.js?v=3"></script>
+  <script src="js/reveal.js?v=3"></script>
+  <script src="js/build.js?v=3"></script>
+  <script src="js/effect.js?v=3"></script>
+  <script src="js/app.js?v=3"></script>
+  <script src="js/switch.js?v=3"></script>
+  <script src="js/editor.js?v=3"></script>
+  <script src="js/teacher.js?v=3"></script>
+  <script src="js/offline.js?v=3"></script>
 </body>
 </html>

@@ -21,6 +21,8 @@ const DEFAULT_SETTINGS = {
   theme: "nacht",
   showText: true,
   speech: true,
+  naturalVoice: true,
+  voiceName: "",
   rate: "0.85",
   sounds: true,
   tiles: "6",
@@ -267,4 +269,5 @@ document.getElementById("playBackButton").addEventListener("click", () => {
 
 applyTheme();
 Fx.init();
+loadSounds();
 renderHome();

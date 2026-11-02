@@ -6,8 +6,18 @@
   und bei jeder neuen Version erhöht werden – dann lädt der Browser die neue Fassung.
 */
 
-const VERSION = "2";
+const VERSION = "3";
 const APP_CACHE = "tasterwelt-app-" + VERSION;
+const MEDIA_CACHE = "tasterwelt-medien";
+
+// Liste der Klänge (INSTRUMENTS, EFFECT_CLIPS) und der Thorsten-Texte (VOICE_CLIPS)
+importScripts("js/klang.js?v=" + VERSION, "js/voice.js?v=" + VERSION);
+
+const MEDIA_FILES = [
+  ...Object.values(INSTRUMENTS).flatMap(Object.keys).map(name => "klang/" + name + ".m4a"),
+  ...EFFECT_CLIPS.map(name => "klang/" + name + ".m4a"),
+  ...Object.values(VOICE_CLIPS).map(name => "stimme/" + name + ".m4a")
+];
 
 const APP_FILES = [
   "./",
@@ -22,6 +32,8 @@ const APP_FILES = [
   "js/illustrations.js?v=" + VERSION,
   "js/content.js?v=" + VERSION,
   "js/theme.js?v=" + VERSION,
+  "js/klang.js?v=" + VERSION,
+  "js/voice.js?v=" + VERSION,
   "js/sound.js?v=" + VERSION,
   "js/fx.js?v=" + VERSION,
   "js/visual.js?v=" + VERSION,
@@ -41,6 +53,8 @@ self.addEventListener("install", event => {
     caches.open(APP_CACHE)
       // "reload": am Browser-Zwischenspeicher vorbei, damit keine alte Fassung gespeichert wird
       .then(cache => cache.addAll(APP_FILES.map(file => new Request(file, { cache: "reload" }))))
+      .then(() => caches.open(MEDIA_CACHE))
+      .then(cache => cache.addAll(MEDIA_FILES))
       .then(() => self.skipWaiting())
   );
 });
@@ -77,6 +91,19 @@ self.addEventListener("fetch", event => {
           return response;
         })
         .catch(() => caches.match("index.html", { cacheName: APP_CACHE }))
+    );
+    return;
+  }
+
+  // Klänge und Stimme: aus dem Speicher, sonst aus dem Netz und merken
+  if (url.pathname.includes("/klang/") || url.pathname.includes("/stimme/")) {
+    event.respondWith(
+      caches.open(MEDIA_CACHE).then(cache =>
+        cache.match(request).then(cached => cached || fetch(request).then(response => {
+          if (response.ok) cache.put(request, response.clone());
+          return response;
+        }))
+      )
     );
     return;
   }

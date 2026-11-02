@@ -70,20 +70,32 @@ function createEffectGame(variant, collection) {
     raf = requestAnimationFrame(step);
   }
 
-  /* Leuchten an: Klangfläche starten bzw. heller machen */
-  function glowOn(notes) {
+  /* Leuchten an: Weingläser erklingen. Im Halten-Modus klingen sie alle
+     5 Sekunden neu an, solange gedrückt wird. */
+  let glowTimer = null;
+
+  function glowOn(low) {
     target = 1;
-    if (!padSound) padSound = pad(notes, { volume: 0.06, attack: 0.6, cutoff: 500 });
-    padSound.swell(1);
+    if (!padSound) {
+      padSound = Sounds.glow(low);
+      if (settings.hold) {
+        clearInterval(glowTimer);
+        glowTimer = setInterval(() => {
+          if (padSound) padSound.stop(2.5);
+          padSound = Sounds.glow(low);
+        }, 5000);
+      }
+    }
 
     clearTimeout(decayTimer);
-    if (!settings.hold) decayTimer = setTimeout(glowOff, 2600);
+    if (!settings.hold) decayTimer = setTimeout(glowOff, 3500);
   }
 
   function glowOff() {
     target = 0.12;
+    clearInterval(glowTimer);
     if (padSound) {
-      padSound.stop(1.8);
+      padSound.stop(2);
       padSound = null;
     }
   }
@@ -276,12 +288,12 @@ function createEffectGame(variant, collection) {
     },
     polarlicht: {
       setup() { setupCanvas(); loop(drawAurora); },
-      press: () => glowOn([48, 55, 59, 64]),
+      press: () => glowOn(false),
       release() { if (settings.hold) glowOff(); }
     },
     lava: {
       setup() { setupCanvas(); setupLava(); loop(drawLava); },
-      press: () => glowOn([45, 52, 57, 60]),
+      press: () => glowOn(true),
       release() { if (settings.hold) glowOff(); }
     },
     musik: {
@@ -328,6 +340,7 @@ function createEffectGame(variant, collection) {
       stopHold();
       timers.forEach(clearTimeout);
       clearTimeout(decayTimer);
+      clearInterval(glowTimer);
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resizeCanvas);
       if (padSound) padSound.stop(0.4);

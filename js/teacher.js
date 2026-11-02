@@ -103,6 +103,8 @@ const form = {
   theme: document.getElementById("themeSelect"),
   showText: document.getElementById("showTextToggle"),
   speech: document.getElementById("speechToggle"),
+  naturalVoice: document.getElementById("naturalVoiceToggle"),
+  voiceName: document.getElementById("voiceSelect"),
   rate: document.getElementById("rateSelect"),
   sounds: document.getElementById("soundsToggle"),
   tiles: document.getElementById("tilesSelect"),
@@ -165,7 +167,30 @@ for (const [name, input] of Object.entries(form)) {
 
 document.getElementById("learnKeyButton").addEventListener("click", startLearningKey);
 
+/* Deutsche Gerätestimmen zur Auswahl – bessere zuerst */
+function renderVoiceOptions() {
+  const select = document.getElementById("voiceSelect");
+  select.innerHTML = "";
+  const auto = document.createElement("option");
+  auto.value = "";
+  auto.textContent = germanVoices.length ? "automatisch (" + germanVoices[0].name + ")" : "automatisch";
+  select.appendChild(auto);
+  germanVoices.forEach(v => {
+    const option = document.createElement("option");
+    option.value = v.name;
+    option.textContent = v.name;
+    select.appendChild(option);
+  });
+  select.value = settings.voiceName || "";
+}
+
+document.getElementById("voiceTestButton").addEventListener("click", () => {
+  unlockAudio();
+  speakDevice("Hallo! So klingt diese Stimme.");
+});
+
 function openSettingsScreen() {
+  renderVoiceOptions();
   applySettingsToForm();
   updateOfflineStatus();
   document.getElementById("settingsEndButton").classList.toggle("hidden", !activeGame);

@@ -5,7 +5,9 @@ Für Kinder, Jugendliche und Erwachsene – mit Taster (per Kabel und Adapter od
 
 **App öffnen:** https://walteroelf.github.io/Tasterwelt/
 
-**Gestaltung:** Die Spielfläche ist eine dunkle Bühne mit wenigen, leuchtenden Farben und kaum Text – altersneutral und geeignet für die Förderung bei CVI (zerebraler Sehbeeinträchtigung). Alle Grafiken sind eigene, schlichte Vektorgrafiken, alle Klänge werden im Gerät erzeugt (Marimba, Glocken, Klangflächen mit Raumhall).
+**Gestaltung:** Die Spielfläche ist eine dunkle Bühne mit wenigen, leuchtenden Farben und kaum Text – altersneutral und geeignet für die Förderung bei CVI (zerebraler Sehbeeinträchtigung). Alle Grafiken sind eigene, schlichte Vektorgrafiken.
+
+**Klang und Stimme:** Echte Aufnahmen statt erzeugter Töne – Marimba, Vibraphon, Handglocken, Weingläser, Ocean Drum, Holz (CC0, Versilian Community Sample Library), dazu ein Raketenstart der NASA und Feuerwerk (gemeinfrei). Die Texte der Vorlagen spricht die natürliche Stimme **Thorsten-Voice** (wie in Bilderwahl); eigene Texte die gewählte Gerätestimme – oder eine eigene Aufnahme.
 
 ---
 
@@ -51,7 +53,11 @@ Ohne Taster: „Bildschirm antippen zählt auch“ ist eingeschaltet – dann is
 - **Text anzeigen** unter den Bildern – an/aus.
 - **Ruhiger Modus:** weniger Funken, langsamere Übergänge.
 
-**Ton** – Texte vorlesen (Gerätestimme), Sprechtempo, Klänge an/aus. Eigene Aufnahmen werden immer abgespielt.
+**Ton**
+- **Texte vorlesen** an/aus. Eigene Sprachaufnahmen haben immer Vorrang.
+- **Natürliche Stimme für die Vorlagen** (Thorsten-Voice) an/aus.
+- **Gerätestimme für eigene Texte:** Auswahl aller deutschen Stimmen des iPads, mit „Probe hören“. Bessere Stimmen lassen sich unter Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Deutsch laden (z. B. Anna oder Helena „Erweitert“).
+- **Sprechtempo** und **Klänge** an/aus.
 
 **Bausteine**
 - **Aufdecken:** Anzahl der Felder (1 bis 16).
@@ -108,7 +114,12 @@ Fotos, Videos und Aufnahmen bleiben nur auf dem Gerät (im Browser gespeichert).
 | `js/effect.js` | Baustein 4: Effekt (Feuerwerk, Wellen, Polarlicht, Lavalampe, Musik, Überraschung) |
 | `js/content.js` | Vorlagen und Liste der Bausteine |
 | `js/editor.js` | Eigene Sammlungen, Aufnahme, Export/Import |
-| `js/sound.js` | Klänge (Web Audio mit Raumhall, ohne Dateien) und Sprache |
+| `js/sound.js` | Klänge abspielen (Web Audio) und Sprache |
+| `js/klang.js` | Liste der Aufnahmen |
+| `js/voice.js` | Zuordnung Text → Thorsten-Aufnahme (erzeugt) |
+| `klang/` | Aufnahmen der Instrumente und Geräusche, Quellen in `klang/LIZENZ.md` |
+| `stimme/` | Texte der Vorlagen mit der Thorsten-Stimme |
+| `scripts/` | Skripte zum Erzeugen von Klängen und Stimme, Anleitung in `scripts/KLAENGE.md` |
 | `js/fx.js` | Funken, Feuerwerk, Wellenringe, Rauch |
 | `js/visual.js` | Bilder und Videos anzeigen |
 | `js/db.js` | Speicherung auf dem Gerät (IndexedDB) |
