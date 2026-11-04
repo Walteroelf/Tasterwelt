@@ -34,6 +34,7 @@ const GERAEUSCHE = [
   { id: "klingel", name: "Türklingel" },
   { id: "katze", name: "Katze miaut" },
   { id: "applaus", name: "Applaus" },
+  { id: "kuh", name: "Kuh muht" },
   { id: "eingiessen", name: "Wasser einschenken" },
   { id: "kaffeemaschine", name: "Kaffeemaschine" }
 ];

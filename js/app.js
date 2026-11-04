@@ -30,7 +30,7 @@ const DEFAULT_SETTINGS = {
   steps: "5",
   hold: false,
   calm: false,
-  codeLock: true
+  codeLock: false
 };
 
 const settings = loadSettings();
@@ -38,6 +38,9 @@ const settings = loadSettings();
 function loadSettings() {
   try {
     const stored = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
+    // Ab Version 4 ist der Zahlencode standardmäßig aus: einmalig auch bei gespeicherten Einstellungen
+    if (stored.codeLock === true && !stored.codeDefaultV4) stored.codeLock = false;
+    stored.codeDefaultV4 = true;
     return { ...DEFAULT_SETTINGS, ...stored };
   } catch (error) {
     return { ...DEFAULT_SETTINGS };

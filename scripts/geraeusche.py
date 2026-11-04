@@ -35,6 +35,7 @@ CLIPS = {
     "klingel":        ("Doorbell-classic-dingdong.ogg", 0.0, 4.0, 1.0, 0.85, False),
     "katze":          ("Meow of a pleading cat.oga", 0.0, 3.5, 0.4, 0.9, False),
     "applaus":        ("277021 sandermotions applause-2.wav", 0.0, 6.0, 1.5, 0.8, False),
+    "kuh":            ("Cow in Antefasy.wav", 0.0, 1.8, 0.3, 0.9, False),
     "eingiessen":     ("Boiling water being poured into a mug for tea.ogg", 1.0, 8.0, 1.5, 0.85, False),
     "kaffeemaschine": ("Drip coffee maker dripping.ogg", None, 7.0, 1.5, 0.85, False),
     "dampfzug":       ("Steam engine.ogg", 5.0, 12.0, 2.0, 0.7, True),

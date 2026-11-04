@@ -27,7 +27,7 @@ const BUILTIN_COLLECTIONS = [
       ["uhr", "Zeit für einen Kaffee."],
       ["wasserkocher", "Das Wasser kocht."],
       ["filter", "Der Kaffee läuft durch.", "kaffeemaschine"],
-      ["milch", "Ein Schuss Milch.", "eingiessen"],
+      ["milch", "Ein Schuss Milch.", "kuh"],
       ["umruehren", "Einmal umrühren."],
       ["pause", "Und jetzt: Pause."]
     ])

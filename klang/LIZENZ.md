@@ -29,5 +29,6 @@ Aufbereitet mit `scripts/geraeusche.py`. Alle Aufnahmen sind gemeinfrei oder CC0
 | `klingel` | „Doorbell-classic-dingdong.ogg“ | gemeinfrei |
 | `katze` | „Meow of a pleading cat.oga“ | gemeinfrei |
 | `applaus` | „277021 sandermotions applause-2.wav“ | CC0 |
+| `kuh` | „Cow in Antefasy.wav“ | CC0 |
 | `eingiessen` | „Boiling water being poured into a mug for tea.ogg“ | gemeinfrei |
 | `kaffeemaschine` | „Drip coffee maker dripping.ogg“ | gemeinfrei |
