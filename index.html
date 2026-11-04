@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-title" content="Tasterwelt" />
   <meta name="theme-color" content="#f4f1ea" />
 
-  <link rel="stylesheet" href="css/style.css?v=3" />
+  <link rel="stylesheet" href="css/style.css?v=4" />
 </head>
 
 <body>
@@ -145,6 +145,7 @@
 
       <input type="file" id="pagePhotoInput" accept="image/*" class="hidden" />
       <input type="file" id="pageVideoInput" accept="video/*" class="hidden" />
+      <input type="file" id="pageSfxInput" accept="audio/*" class="hidden" />
     </div>
   </div>
 
@@ -308,6 +309,15 @@
           </select>
         </div>
 
+        <div class="field-row">
+          <label for="popSelect">Knall beim Ballon</label>
+          <select id="popSelect">
+            <option value="leise">leise</option>
+            <option value="normal">normal</option>
+            <option value="laut">laut</option>
+          </select>
+        </div>
+
         <label class="toggle">
           <span><strong>Klänge</strong><small>Musik und Geräusche der Bausteine.</small></span>
           <input type="checkbox" id="soundsToggle" />
@@ -361,28 +371,28 @@
         <button id="settingsCloseButton" class="primary">Fertig</button>
         <button id="settingsEndButton" class="hidden">Übung beenden</button>
         <span class="platz"></span>
-        <span class="footnote">Tasterwelt · Version 3</span>
+        <span class="footnote">Tasterwelt · Version 4</span>
       </div>
     </div>
   </div>
 
-  <script src="js/db.js?v=3"></script>
-  <script src="js/illustrations.js?v=3"></script>
-  <script src="js/content.js?v=3"></script>
-  <script src="js/theme.js?v=3"></script>
-  <script src="js/klang.js?v=3"></script>
-  <script src="js/voice.js?v=3"></script>
-  <script src="js/sound.js?v=3"></script>
-  <script src="js/fx.js?v=3"></script>
-  <script src="js/visual.js?v=3"></script>
-  <script src="js/story.js?v=3"></script>
-  <script src="js/reveal.js?v=3"></script>
-  <script src="js/build.js?v=3"></script>
-  <script src="js/effect.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
-  <script src="js/switch.js?v=3"></script>
-  <script src="js/editor.js?v=3"></script>
-  <script src="js/teacher.js?v=3"></script>
-  <script src="js/offline.js?v=3"></script>
+  <script src="js/db.js?v=4"></script>
+  <script src="js/illustrations.js?v=4"></script>
+  <script src="js/content.js?v=4"></script>
+  <script src="js/theme.js?v=4"></script>
+  <script src="js/klang.js?v=4"></script>
+  <script src="js/voice.js?v=4"></script>
+  <script src="js/sound.js?v=4"></script>
+  <script src="js/fx.js?v=4"></script>
+  <script src="js/visual.js?v=4"></script>
+  <script src="js/story.js?v=4"></script>
+  <script src="js/reveal.js?v=4"></script>
+  <script src="js/build.js?v=4"></script>
+  <script src="js/effect.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
+  <script src="js/switch.js?v=4"></script>
+  <script src="js/editor.js?v=4"></script>
+  <script src="js/teacher.js?v=4"></script>
+  <script src="js/offline.js?v=4"></script>
 </body>
 </html>

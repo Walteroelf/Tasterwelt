@@ -25,6 +25,7 @@ const DEFAULT_SETTINGS = {
   voiceName: "",
   rate: "0.85",
   sounds: true,
+  pop: "laut",
   tiles: "6",
   steps: "5",
   hold: false,

@@ -107,6 +107,7 @@ const form = {
   voiceName: document.getElementById("voiceSelect"),
   rate: document.getElementById("rateSelect"),
   sounds: document.getElementById("soundsToggle"),
+  pop: document.getElementById("popSelect"),
   tiles: document.getElementById("tilesSelect"),
   steps: document.getElementById("stepsSelect"),
   hold: document.getElementById("holdToggle"),
@@ -162,6 +163,7 @@ for (const [name, input] of Object.entries(form)) {
     document.body.classList.toggle("calm", settings.calm);
     if (name === "theme") applyTheme();
     if (name === "reminder") restartReminder();
+    if (name === "pop") Sounds.pop();
   });
 }
 

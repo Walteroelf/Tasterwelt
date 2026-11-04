@@ -12,6 +12,7 @@ function createStoryGame(collection) {
   let progress = null;
   let index = -1;
   let busy = false;
+  let speechTimer = null;
 
   function showElement(element) {
     element.classList.add("story-page", "enter");
@@ -65,6 +66,9 @@ function createStoryGame(collection) {
 
     Sounds.page();
 
+    // Geräusch zuerst, die Stimme setzt kurz danach ein
+    const soundDone = data.sound ? startPageSound(data) : Promise.resolve(0);
+
     if (data.video) {
       stopVoice();
       const video = page.querySelector("video");
@@ -72,7 +76,11 @@ function createStoryGame(collection) {
       // Nach dem Video noch die Aufnahme bzw. den Text, falls vorhanden
       video.onended = () => { if (current === page && (data.audio || data.text)) sayPage(data); };
     } else {
-      sayPage(data);
+      soundDone.then(duration => {
+        const wait = duration ? Math.min(duration, 4) * 550 : 0;
+        clearTimeout(speechTimer);
+        speechTimer = setTimeout(() => { if (current === page) sayPage(data); }, wait);
+      });
     }
   }
 
@@ -81,6 +89,7 @@ function createStoryGame(collection) {
     page.appendChild(textElement("Ende", true));
     showElement(page);
     updateProgress();
+    stopAmbient(2);
     Sounds.ending();
   }
 
@@ -108,7 +117,9 @@ function createStoryGame(collection) {
       busy = true;
       setTimeout(() => { busy = false; }, 500);
 
+      clearTimeout(speechTimer);
       stopVoice();
+      stopPageSound();
       index++;
       if (index > pages.length) index = 0;
 
@@ -119,7 +130,10 @@ function createStoryGame(collection) {
     release() {},
 
     stop() {
+      clearTimeout(speechTimer);
       stopVoice();
+      stopPageSound(0.2);
+      stopAmbient(0.5);
       if (current) current.querySelectorAll("video").forEach(v => v.pause());
     }
   };

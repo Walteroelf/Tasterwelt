@@ -43,3 +43,16 @@ ESPEAK_DATA_DIR=/tmp/espeak-ng-data ./venv/bin/python scripts/stimme.py . de_DE-
 ```
 
 Danach die Versionsnummer erhöhen (`?v=…` in `index.html`, `VERSION` in `sw.js`).
+
+## Geräusche der Geschichten
+
+Zusätzlich zu den Paketen `numpy` und `soundfile` wird `av` gebraucht (liest auch Ogg-Dateien, die
+`soundfile` nicht öffnen kann):
+
+```bash
+./venv/bin/pip install av
+./venv/bin/python scripts/geraeusche.py . klang-cache
+```
+
+Andere Aufnahme gewünscht: Eintrag in `CLIPS` in `scripts/geraeusche.py` ändern (nur gemeinfreie oder CC0-Aufnahmen),
+Name auch in `GERAEUSCHE` in `js/klang.js` eintragen, danach die Versionsnummer erhöhen.

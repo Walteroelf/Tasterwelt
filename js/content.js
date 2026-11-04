@@ -5,10 +5,13 @@
 */
 
 function builtinPages(list) {
-  return list.map(([svg, text], index) => ({
+  return list.map(([svg, text, sound, soundBg], index) => ({
     id: "p" + index,
     svg,
     text,
+    sound: sound || null,
+    soundBg: Boolean(soundBg),
+    sfx: null,
     image: null,
     audio: null,
     video: null
@@ -23,8 +26,8 @@ const BUILTIN_COLLECTIONS = [
     pages: builtinPages([
       ["uhr", "Zeit für einen Kaffee."],
       ["wasserkocher", "Das Wasser kocht."],
-      ["filter", "Der Kaffee läuft durch."],
-      ["milch", "Ein Schuss Milch."],
+      ["filter", "Der Kaffee läuft durch.", "kaffeemaschine"],
+      ["milch", "Ein Schuss Milch.", "eingiessen"],
       ["umruehren", "Einmal umrühren."],
       ["pause", "Und jetzt: Pause."]
     ])
@@ -34,11 +37,11 @@ const BUILTIN_COLLECTIONS = [
     builtin: true,
     name: "Ein Tag am Meer",
     pages: builtinPages([
-      ["auto", "Wir fahren ans Meer."],
-      ["sonne", "Die Sonne scheint."],
-      ["wellen", "Die Wellen rauschen."],
-      ["schiff", "Ein Schiff fährt vorbei."],
-      ["moewe", "Eine Möwe fliegt über das Wasser."],
+      ["auto", "Wir fahren ans Meer.", "auto"],
+      ["sonne", "Die Sonne scheint.", "voegel", true],
+      ["wellen", "Die Wellen rauschen.", "wellen", true],
+      ["schiff", "Ein Schiff fährt vorbei.", "schiffshorn"],
+      ["moewe", "Eine Möwe fliegt über das Wasser.", "moewe"],
       ["untergang", "Die Sonne geht unter."]
     ])
   }

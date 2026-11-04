@@ -780,6 +780,28 @@ details.hint summary {
   font-size: 16px;
 }
 
+.page-sound {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.page-sound select {
+  width: auto;
+  min-width: 220px;
+  min-height: 40px;
+  max-width: 100%;
+}
+
+.bg-check {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
 .page-tools {
   display: flex;
   flex-wrap: wrap;

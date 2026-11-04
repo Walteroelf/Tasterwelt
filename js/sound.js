@@ -19,6 +19,7 @@
 let audioContext = null;
 let master = null;
 let reverbSend = null;
+let punchBus = null;
 let currentVoiceAudio = null;
 
 const buffers = {};
@@ -54,6 +55,19 @@ function buildMixer(ctx) {
   wet.gain.value = 0.22;
   convolver.connect(wet).connect(limiter);
   reverbSend = convolver;
+
+  // Kräftiger Weg für den Ballon-Knall: verstärkt und weich übersteuert, am Begrenzer vorbei
+  const curve = new Float32Array(1024);
+  for (let i = 0; i < curve.length; i++) {
+    const x = (i / (curve.length - 1)) * 2 - 1;
+    curve[i] = Math.tanh(x * 1.6) / Math.tanh(1.6);
+  }
+  const shaper = ctx.createWaveShaper();
+  shaper.curve = curve;
+  shaper.connect(ctx.destination);
+  punchBus = ctx.createGain();
+  punchBus.gain.value = 2.2;
+  punchBus.connect(shaper);
 }
 
 function makeImpulse(ctx, seconds) {
@@ -105,15 +119,16 @@ function unlockAudio() {
 }
 
 /* Eine Aufnahme abspielen. Gibt ein Objekt mit stop() zurück. */
-function play(name, { start = 0, rate = 1, volume = 1, reverb = 0.3, offset = 0, duration = null, fadeIn = 0 } = {}) {
+function play(name, { start = 0, rate = 1, volume = 1, reverb = 0.3, offset = 0, duration = null, fadeIn = 0, loop = false, bus = "master" } = {}) {
   const ctx = settings.sounds ? getAudio() : null;
-  const buffer = buffers[name];
+  const buffer = typeof name === "string" ? buffers[name] : name;
   if (!ctx || !buffer) return { stop() {} };
 
   const t = ctx.currentTime + start;
   const source = ctx.createBufferSource();
   source.buffer = buffer;
   source.playbackRate.value = rate;
+  source.loop = loop;
 
   const gain = ctx.createGain();
   if (fadeIn > 0) {
@@ -129,7 +144,7 @@ function play(name, { start = 0, rate = 1, volume = 1, reverb = 0.3, offset = 0,
   }
 
   source.connect(gain);
-  gain.connect(master);
+  gain.connect(bus === "punch" ? punchBus : master);
   if (reverb > 0) {
     const send = ctx.createGain();
     send.gain.value = reverb;
@@ -180,9 +195,18 @@ const Sounds = {
     play("luft", { rate: 0.75 + progress * 0.7, volume: 0.7, reverb: 0.1 });
   },
 
+  /* Ballon platzt – Lautstärke nach Einstellung (leise / normal / laut) */
   pop() {
-    play("knall", { volume: 1, reverb: 0.35 });
-    play("luft", { start: 0.02, rate: 1.8, volume: 0.35, reverb: 0.2 });
+    if (settings.pop === "leise") {
+      play("knall", { volume: 0.3, reverb: 0.3 });
+    } else if (settings.pop === "normal") {
+      play("knall", { volume: 1, reverb: 0.35 });
+      play("luft", { start: 0.02, rate: 1.8, volume: 0.35, reverb: 0.2 });
+    } else {
+      play("knall", { volume: 1, reverb: 0.3, bus: "punch" });
+      play("knall", { start: 0.004, rate: 0.8, volume: 0.9, reverb: 0.2, bus: "punch" });
+      play("luft", { start: 0.01, rate: 1.6, volume: 0.5, reverb: 0.2 });
+    }
   },
 
   /* Dominostein aufstellen: Holzblock, Stein für Stein etwas höher */
@@ -272,6 +296,59 @@ const Sounds = {
     return { stop(release = 1.5) { voices.forEach(v => v.stop(release)); } };
   }
 };
+
+/* ---------- Geräusche der Geschichten ----------
+   Jede Seite kann ein Geräusch haben (sound = Name aus GERAEUSCHE oder "__own"
+   mit der Datei in sfx). soundBg = läuft als Dauergeräusch im Hintergrund weiter,
+   bis eine Seite ein neues Hintergrundgeräusch hat oder die Geschichte endet. */
+
+const ownBuffers = new WeakMap();
+let ambient = null;
+let onceSound = null;
+
+async function soundBuffer(page) {
+  if (!page || !page.sound) return null;
+  if (page.sound !== "__own") return buffers[page.sound] || null;
+  if (!page.sfx) return null;
+
+  if (!ownBuffers.has(page.sfx)) {
+    const ctx = getAudio();
+    if (!ctx) return null;
+    try {
+      const data = await page.sfx.arrayBuffer();
+      ownBuffers.set(page.sfx, await new Promise((resolve, reject) => ctx.decodeAudioData(data, resolve, reject)));
+    } catch (error) {
+      return null;
+    }
+  }
+  return ownBuffers.get(page.sfx);
+}
+
+function stopAmbient(release = 1.5) {
+  if (ambient) ambient.stop(release);
+  ambient = null;
+}
+
+function stopPageSound(release = 0.4) {
+  if (onceSound) onceSound.stop(release);
+  onceSound = null;
+}
+
+/* Spielt das Geräusch einer Seite; gibt die Dauer in Sekunden zurück (0 bei Hintergrund) */
+async function startPageSound(page, { preview = false } = {}) {
+  const buffer = await soundBuffer(page);
+  if (!buffer) return 0;
+
+  if (page.soundBg && !preview) {
+    stopAmbient(1.2);
+    ambient = play(buffer, { loop: true, volume: 0.4, fadeIn: 1.5, reverb: 0.08 });
+    return 0;
+  }
+
+  stopPageSound(0.3);
+  onceSound = play(buffer, { volume: 0.9, reverb: 0.12 });
+  return buffer.duration;
+}
 
 /* ---------- Sprache ---------- */
 

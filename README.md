@@ -58,6 +58,7 @@ Ohne Taster: „Bildschirm antippen zählt auch“ ist eingeschaltet – dann is
 - **Natürliche Stimme für die Vorlagen** (Thorsten-Voice) an/aus.
 - **Gerätestimme für eigene Texte:** Auswahl aller deutschen Stimmen des iPads, mit „Probe hören“. Bessere Stimmen lassen sich unter Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Deutsch laden (z. B. Anna oder Helena „Erweitert“).
 - **Sprechtempo** und **Klänge** an/aus.
+- **Knall beim Ballon:** leise, normal oder laut (Standard: laut). Beim Umschalten ist der Knall einmal zu hören.
 
 **Bausteine**
 - **Aufdecken:** Anzahl der Felder (1 bis 16).
@@ -77,6 +78,7 @@ Startseite → **Eigene Inhalte** → **+ Neue Sammlung** (oder ein Beispiel „
 Jede Seite hat:
 - **Foto** – mehrere Fotos auf einmal wählen geht auch, der Dateiname wird zum Text (*Am See.jpg* → „Am See“). Seiten ohne Foto zeigen den Text groß.
 - **Text** – wird vorgelesen
+- **Geräusch** – aus 15 Alltagsgeräuschen (Möwe, Schiffshorn, Wellen, Regen, Türklingel …) oder eine eigene Audiodatei; mit „Probe“ anhören. Das Geräusch klingt beim Erscheinen der Seite, danach folgt die Stimme. Mit „läuft im Hintergrund weiter“ bleibt es als Dauergeräusch an, bis eine Seite ein neues Hintergrundgeräusch hat oder die Geschichte endet. Die Vorlagen enthalten schon passende Geräusche.
 - **Aufnahme** – eigene Stimme, hat Vorrang vor der Gerätestimme (max. 30 Sekunden)
 - **Video** – in der Geschichte als Seite, beim Aufdecken als Belohnung (gut: kurze Videos von vertrauten Personen)
 

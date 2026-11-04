@@ -17,6 +17,7 @@ const editorError = document.getElementById("editorError");
 const multiPhotoInput = document.getElementById("multiPhotoInput");
 const pagePhotoInput = document.getElementById("pagePhotoInput");
 const pageVideoInput = document.getElementById("pageVideoInput");
+const pageSfxInput = document.getElementById("pageSfxInput");
 const exportButton = document.getElementById("exportCollectionButton");
 const deleteButton = document.getElementById("deleteCollectionButton");
 
@@ -27,11 +28,12 @@ let draft = null;
 let draftIsNew = false;
 let photoTarget = null;
 let videoTarget = null;
+let sfxTarget = null;
 let recorder = null;
 let recordingPage = null;
 
 function newPage(fields = {}) {
-  return { id: createId(), text: "", svg: null, image: null, audio: null, video: null, ...fields };
+  return { id: createId(), text: "", svg: null, image: null, audio: null, video: null, sound: null, soundBg: false, sfx: null, ...fields };
 }
 
 function openEditor(collection) {
@@ -118,6 +120,7 @@ function renderPageRows() {
     text.value = page.text || "";
     text.addEventListener("input", () => { page.text = text.value; });
     fields.appendChild(text);
+    fields.appendChild(soundRow(page));
 
     const tools = document.createElement("div");
     tools.className = "page-tools";
@@ -240,6 +243,73 @@ pagePhotoInput.addEventListener("change", async () => {
   photoTarget.image = await resizeImage(file);
   if (!photoTarget.text) photoTarget.text = textFromFileName(file.name);
   photoTarget = null;
+  renderPageRows();
+});
+
+/* Auswahl "Geräusch" einer Seite: Liste, Probehören, Hintergrund, eigene Datei */
+function soundRow(page) {
+  const row = document.createElement("div");
+  row.className = "page-sound";
+
+  const label = document.createElement("span");
+  label.textContent = "Geräusch";
+  row.appendChild(label);
+
+  const select = document.createElement("select");
+  select.setAttribute("aria-label", "Geräusch für Seite");
+  const options = [["", "kein Geräusch"], ...GERAEUSCHE.map(g => [g.id, g.name + (g.loop ? " (Dauer)" : "")])];
+  if (page.sfx) options.push(["__own", "Eigene Datei"]);
+  options.push(["__upload", "Eigene Datei wählen …"]);
+  options.forEach(([value, name]) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = name;
+    select.appendChild(option);
+  });
+  select.value = page.sound || "";
+  select.addEventListener("change", () => {
+    if (select.value === "__upload") {
+      select.value = page.sound || "";
+      sfxTarget = page;
+      pageSfxInput.value = "";
+      pageSfxInput.click();
+      return;
+    }
+    page.sound = select.value || null;
+    const known = GERAEUSCHE.find(g => g.id === page.sound);
+    page.soundBg = Boolean(known && known.loop);
+    renderPageRows();
+  });
+  row.appendChild(select);
+
+  if (page.sound) {
+    row.appendChild(toolButton("Probe", () => { unlockAudio(); startPageSound(page, { preview: true }); }));
+
+    const bg = document.createElement("label");
+    bg.className = "bg-check";
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    box.checked = Boolean(page.soundBg);
+    box.addEventListener("change", () => { page.soundBg = box.checked; });
+    bg.append(box, " läuft im Hintergrund weiter");
+    row.appendChild(bg);
+  }
+  return row;
+}
+
+pageSfxInput.addEventListener("change", () => {
+  const file = pageSfxInput.files[0];
+  if (!file || !sfxTarget) return;
+
+  if (file.size > 8 * 1024 * 1024) {
+    editorError.textContent = "Die Datei ist zu groß (über 8 MB). Bitte ein kürzeres Geräusch wählen.";
+    return;
+  }
+
+  sfxTarget.sfx = file;
+  sfxTarget.sound = "__own";
+  sfxTarget = null;
+  editorError.textContent = "";
   renderPageRows();
 });
 
@@ -371,14 +441,17 @@ exportButton.addEventListener("click", async () => {
 
   const data = {
     app: "tasterwelt",
-    version: 2,
+    version: 3,
     name: draft.name,
     pages: await Promise.all(draft.pages.map(async page => ({
       text: page.text || "",
       svg: page.svg || null,
       image: page.image ? await blobToDataUrl(page.image) : null,
       audio: page.audio ? await blobToDataUrl(page.audio) : null,
-      video: page.video ? await blobToDataUrl(page.video) : null
+      video: page.video ? await blobToDataUrl(page.video) : null,
+      sound: page.sound || null,
+      soundBg: Boolean(page.soundBg),
+      sfx: page.sfx ? await blobToDataUrl(page.sfx) : null
     })))
   };
 
@@ -419,7 +492,10 @@ importInput.addEventListener("change", async () => {
         svg: ILL[page.svg] ? page.svg : null,
         image: await dataUrlToBlob(page.image),
         audio: await dataUrlToBlob(page.audio),
-        video: await dataUrlToBlob(page.video)
+        video: await dataUrlToBlob(page.video),
+        sfx: await dataUrlToBlob(page.sfx),
+        sound: page.sound === "__own" ? (page.sfx ? "__own" : null) : (GERAEUSCHE.some(g => g.id === page.sound) ? page.sound : null),
+        soundBg: Boolean(page.soundBg)
       })))
     };
 
