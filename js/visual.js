@@ -28,7 +28,7 @@ function makeVisual(page) {
     img.alt = page.text || "";
     img.draggable = false;
     // Kleine Bilder höchstens doppelt so groß zeigen, damit sie nicht unscharf werden
-    if (page.imageUrl) img.addEventListener("load", () => { img.style.maxWidth = Math.round(img.naturalWidth * 2.2) + "px"; });
+    if (page.imageUrl) img.addEventListener("load", () => { img.style.maxWidth = "min(100%, " + Math.round(img.naturalWidth * 2.2) + "px)"; });
     box.appendChild(img);
   } else {
     box.innerHTML = ILL[page.svg];

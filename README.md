@@ -76,6 +76,8 @@ Noch sicherer: **Geführter Zugriff** von iPadOS (Einstellungen → Bedienungshi
 
 **Der Fischer und seine Frau** (Grimm, in einfachen Sätzen, ein Satz pro Tasterdruck): Bilder von Otto Ubbelohde und Alexander Zick (gemeinfrei, siehe `bilder/LIZENZ.md`), Stimme Thorsten, dazu Meer, Möwe, Regen und Donner im Hintergrund. Bei Sätzen mit gleichem Bild bleibt das Bild stehen, nur der Satz wechselt.
 
+**Mara und die Schneekönigin** (neu geschrieben, 21 Sätze für Jugendliche): Mara folgt einer Fee in den Eispalast und gewinnt den Frühling zurück. Bilder von Edmund Dulac, W. Heath Robinson und Arthur Rackham (gemeinfrei, siehe `bilder/LIZENZ.md`).
+
 ---
 
 ## Eigene Inhalte

@@ -11,7 +11,7 @@ const INSTRUMENTS = {
 };
 
 /* Bilddateien der Vorlagen in bilder/ – für den Offline-Speicher */
-const BILDER = ["fischer_angeln", "fischer_butt", "fischer_huette", "fischer_strand", "fischer_sturm"];
+const BILDER = ["fischer_angeln", "fischer_butt", "fischer_huette", "fischer_strand", "fischer_sturm", "mara_winter", "mara_fee", "mara_see", "mara_koenigin", "mara_fruehling"];
 
 const EFFECT_CLIPS = [
   "glocke-c4", "glitzer", "glas-1", "glas-2", "glas-3", "meer",

@@ -6,7 +6,7 @@
   und bei jeder neuen Version erhöht werden – dann lädt der Browser die neue Fassung.
 */
 
-const VERSION = "6";
+const VERSION = "7";
 const APP_CACHE = "tasterwelt-app-" + VERSION;
 const MEDIA_CACHE = "tasterwelt-medien";
 

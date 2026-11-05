@@ -89,6 +89,40 @@ const BUILTIN_COLLECTIONS = [
     ])
   },
   {
+    id: "mara",
+    builtin: true,
+    storyOnly: true,
+    name: "Mara und die Schneekönigin",
+    pages: builtinPages([
+      ["mara_winter", "Seit vielen Wochen schneite es im Dorf, und der Winter wollte nicht enden."],
+      ["mara_winter", "Mara, fünfzehn Jahre alt, stand am Fenster und sah auf die weißen Dächer."],
+      ["mara_winter", "Alle Farben waren verschwunden, sogar das Lachen der Leute."],
+
+      ["mara_fee", "Plötzlich flackerte ein winziges Licht vor der Scheibe.", "glitzer"],
+      ["mara_fee", "Eine kleine Fee schwebte herein und zitterte vor Kälte."],
+      ["mara_fee", "„Ich heiße Lilu“, flüsterte sie. „Die Schneekönigin hat den Frühling in ihrem Eispalast eingesperrt.“"],
+      ["mara_fee", "„Nur du kannst ihn befreien, denn du hast keine Angst vor der Kälte.“"],
+      ["mara_fee", "Mara zog ihren dicksten Mantel an und folgte dem Licht hinaus in die Nacht."],
+
+      ["mara_winter", "Sie stapften durch den tiefen Schnee, an dunklen Tannen vorbei."],
+      ["mara_winter", "Der Wind heulte, aber Lilus Licht zeigte ihnen den Weg."],
+
+      ["mara_see", "Am Morgen erreichten sie einen zugefrorenen See."],
+      ["mara_see", "Dahinter funkelte der Eispalast wie ein Berg aus Glas."],
+      ["mara_see", "Das Tor öffnete sich ganz von allein."],
+
+      ["mara_koenigin", "Auf einem Thron aus Eis saß die Königin, schön und still."],
+      ["mara_koenigin", "„Wer wagt es, in mein Reich zu kommen?“, fragte sie kühl."],
+      ["mara_koenigin", "„Ich bin Mara. Ich möchte den Frühling zurück.“"],
+      ["mara_koenigin", "Die Königin schwieg lange. Dann sagte sie leise: „Ich bin so allein. Nur der Winter bleibt bei mir.“"],
+      ["mara_koenigin", "Mara trat näher und reichte ihr die Hand. „Komm mit uns ins Dorf. Dort bist du nicht allein.“"],
+      ["mara_koenigin", "Da zersprang das Eis, und der Frühling strömte aus dem Palast.", "glitzer"],
+
+      ["mara_fruehling", "Als sie zurückkamen, blühten Blumen im Schnee, und die Welt hatte wieder Farben.", "glocke-c4"],
+      ["mara_fruehling", "Die Menschen lachten, und die Schneekönigin lachte mit ihnen."]
+    ])
+  },
+  {
     id: "meer",
     builtin: true,
     name: "Ein Tag am Meer",
