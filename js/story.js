@@ -13,6 +13,7 @@ function createStoryGame(collection) {
   let index = -1;
   let busy = false;
   let speechTimer = null;
+  let shownPage = null;
 
   function showElement(element) {
     element.classList.add("story-page", "enter");
@@ -55,16 +56,37 @@ function createStoryGame(collection) {
     page.classList.add("story-title-page");
     fill(page, { ...(pages[0] || {}), video: null, text: collection.name }, { forceText: true });
     showElement(page);
+    shownPage = null;
     updateProgress();
   }
 
-  function showPage(data) {
-    const page = document.createElement("div");
-    fill(page, data);
-    showElement(page);
-    updateProgress();
+  /* Gleiches Bild wie auf der vorigen Seite: Bild bleibt stehen, nur der Satz wechselt */
+  function sameScene(data) {
+    return shownPage && current && !data.video && !shownPage.video &&
+      ((data.imageUrl && data.imageUrl === shownPage.imageUrl) || (data.svg && data.svg === shownPage.svg));
+  }
 
-    Sounds.page();
+  function showPage(data) {
+    let page;
+    const keep = sameScene(data);
+
+    if (keep) {
+      page = current;
+      const old = page.querySelector(".story-text");
+      if (old) old.remove();
+      if (data.text && settings.showText) {
+        const text = textElement(data.text);
+        text.classList.add("fade-text");
+        page.appendChild(text);
+      }
+    } else {
+      page = document.createElement("div");
+      fill(page, data);
+      showElement(page);
+      Sounds.page();
+    }
+    shownPage = data;
+    updateProgress();
 
     // Geräusch zuerst, die Stimme setzt kurz danach ein
     const soundDone = data.sound ? startPageSound(data) : Promise.resolve(0);
@@ -88,6 +110,7 @@ function createStoryGame(collection) {
     const page = document.createElement("div");
     page.appendChild(textElement("Ende", true));
     showElement(page);
+    shownPage = null;
     updateProgress();
     stopAmbient(2);
     Sounds.ending();

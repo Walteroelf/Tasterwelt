@@ -52,6 +52,14 @@ function openEditor(collection) {
     };
     draftIsNew = true;
     editorTitle.textContent = "Kopie bearbeiten";
+
+    // Bilddateien der Vorlage werden zu eigenen Bildern der Kopie
+    draft.pages.forEach(page => {
+      if (!page.imageUrl) return;
+      const url = page.imageUrl;
+      page.imageUrl = null;
+      fetch(url).then(r => r.blob()).then(blob => { page.image = blob; renderPageRows(); }).catch(() => {});
+    });
   } else {
     draft = { ...collection, pages: collection.pages.map(p => ({ ...p })) };
     draftIsNew = false;

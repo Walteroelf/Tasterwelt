@@ -12,7 +12,7 @@ function blobUrl(blob) {
 }
 
 function hasPicture(page) {
-  return Boolean(page && (page.image || (page.svg && ILL[page.svg])));
+  return Boolean(page && (page.image || page.imageUrl || (page.svg && ILL[page.svg])));
 }
 
 /* Großes Bild einer Seite (für Geschichte, Aufdecken, Überraschung) – oder null */
@@ -22,11 +22,13 @@ function makeVisual(page) {
   const box = document.createElement("div");
   box.className = "story-visual";
 
-  if (page.image) {
+  if (page.image || page.imageUrl) {
     const img = document.createElement("img");
-    img.src = blobUrl(page.image);
+    img.src = page.image ? blobUrl(page.image) : page.imageUrl;
     img.alt = page.text || "";
     img.draggable = false;
+    // Kleine Bilder höchstens doppelt so groß zeigen, damit sie nicht unscharf werden
+    if (page.imageUrl) img.addEventListener("load", () => { img.style.maxWidth = Math.round(img.naturalWidth * 2.2) + "px"; });
     box.appendChild(img);
   } else {
     box.innerHTML = ILL[page.svg];
@@ -50,9 +52,9 @@ function makeThumb(page, className = "card-visual") {
   const box = document.createElement("div");
   box.className = className;
 
-  if (page && page.image) {
+  if (page && (page.image || page.imageUrl)) {
     const img = document.createElement("img");
-    img.src = blobUrl(page.image);
+    img.src = page.image ? blobUrl(page.image) : page.imageUrl;
     img.alt = "";
     box.appendChild(img);
   } else if (page && page.svg && ILL[page.svg]) {

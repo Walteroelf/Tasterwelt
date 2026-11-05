@@ -112,6 +112,7 @@ const form = {
   steps: document.getElementById("stepsSelect"),
   hold: document.getElementById("holdToggle"),
   calm: document.getElementById("calmToggle"),
+  board: document.getElementById("boardToggle"),
   codeLock: document.getElementById("codeLockToggle")
 };
 
@@ -161,6 +162,7 @@ for (const [name, input] of Object.entries(form)) {
     saveSettings();
     applySettingsToForm();
     document.body.classList.toggle("calm", settings.calm);
+    document.body.classList.toggle("board", settings.board);
     if (name === "theme") applyTheme();
     if (name === "reminder") restartReminder();
     if (name === "pop") Sounds.pop();

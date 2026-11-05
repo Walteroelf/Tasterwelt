@@ -18,7 +18,7 @@ length_scale = float(sys.argv[3]) if len(sys.argv) > 3 else 1.15
 src = open(os.path.join(app, "js/content.js"), encoding="utf8").read()
 
 texts = set()
-texts.update(re.findall(r'\["\w+", "([^"]+)"\]', src))           # Seiten der Vorlagen
+texts.update(re.findall(r'\["\w+", "([^"]+)"(?:, [^\]]*)?\]', src))   # Seiten der Vorlagen (auch mit Geräusch)
 texts.update(re.findall(r'^\s+name: "([^"]+)",$', src, re.M))     # Namen der Vorlagen
 texts.update(["Ende"])                                             # feste Texte aus js/story.js
 

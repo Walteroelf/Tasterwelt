@@ -52,6 +52,7 @@ Ohne Taster: „Bildschirm antippen zählt auch“ ist eingeschaltet – dann is
 - **Farbwelt:** Nacht (mehrfarbig auf Schwarz), Gelb auf Schwarz und Rot auf Schwarz (für CVI), Weiß auf Schwarz, Hell (dunkel auf Papier).
 - **Text anzeigen** unter den Bildern – an/aus.
 - **Ruhiger Modus:** weniger Funken, langsamere Übergänge.
+- **Tafelmodus:** für die Spiegelung auf die digitale Tafel (AirPlay oder Kabel): große Schrift, ohne Fortschrittsbalken und Tasterpunkt.
 
 **Ton**
 - **Texte vorlesen** an/aus. Eigene Sprachaufnahmen haben immer Vorrang.
@@ -68,6 +69,12 @@ Ohne Taster: „Bildschirm antippen zählt auch“ ist eingeschaltet – dann is
 **Zahlen-Code** (Schalter unter „Schutz“, standardmäßig aus) – ist er an, müssen vor den Einstellungen und vor dem Haus-Knopf (Zurück) vier Zahlen eingetippt werden, die als Wörter angezeigt werden („drei – sieben – eins – vier“). So kommen Kinder nicht versehentlich aus der Übung.
 
 Noch sicherer: **Geführter Zugriff** von iPadOS (Einstellungen → Bedienungshilfen → Geführter Zugriff, dann in der App dreimal die obere Taste drücken).
+
+---
+
+## Märchen
+
+**Der Fischer und seine Frau** (Grimm, in einfachen Sätzen, ein Satz pro Tasterdruck): Bilder von Otto Ubbelohde und Alexander Zick (gemeinfrei, siehe `bilder/LIZENZ.md`), Stimme Thorsten, dazu Meer, Möwe, Regen und Donner im Hintergrund. Bei Sätzen mit gleichem Bild bleibt das Bild stehen, nur der Satz wechselt.
 
 ---
 

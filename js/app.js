@@ -30,6 +30,7 @@ const DEFAULT_SETTINGS = {
   steps: "5",
   hold: false,
   calm: false,
+  board: false,
   codeLock: false
 };
 
@@ -122,7 +123,7 @@ async function renderHome() {
       onClick: () => startGame(createStoryGame(collection))
     }));
 
-    if (collection.pages.some(p => hasPicture(p) || p.video)) {
+    if (!collection.storyOnly && collection.pages.some(p => hasPicture(p) || p.video)) {
       revealCards.appendChild(makeCard({
         thumbPage: coverPage(collection, 2),
         title: collection.name,
@@ -150,7 +151,7 @@ async function renderHome() {
     }));
   });
 
-  collections.forEach(collection => {
+  collections.filter(c => !c.storyOnly).forEach(collection => {
     effectCards.appendChild(makeCard({
       thumbPage: coverPage(collection, 1),
       title: "Überraschung",
@@ -198,6 +199,7 @@ function startGame(game) {
   activeGame = game;
   stage.innerHTML = "";
   document.body.classList.toggle("calm", settings.calm);
+  document.body.classList.toggle("board", settings.board);
 
   homeScreen.classList.add("hidden");
   playScreen.classList.remove("hidden");

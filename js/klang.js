@@ -10,6 +10,9 @@ const INSTRUMENTS = {
   chime: { "chime-a4": 69, "chime-c5": 72, "chime-e5": 76 }
 };
 
+/* Bilddateien der Vorlagen in bilder/ – für den Offline-Speicher */
+const BILDER = ["fischer_angeln", "fischer_butt", "fischer_huette", "fischer_strand", "fischer_sturm"];
+
 const EFFECT_CLIPS = [
   "glocke-c4", "glitzer", "glas-1", "glas-2", "glas-3", "meer",
   "tropfen-1", "tropfen-2", "tropfen-3", "tropfen-4",
