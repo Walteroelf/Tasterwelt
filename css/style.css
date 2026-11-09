@@ -1250,3 +1250,181 @@ details.hint summary {
 .story-text.fade-text {
   animation: fade-in 0.5s ease;
 }
+
+/* ---------- Kernsatz: ruhiger Ring, der auf den Taster wartet ---------- */
+
+.kern-ring {
+  position: absolute;
+  left: 50%;
+  bottom: 5vh;
+  width: 9vmin;
+  height: 9vmin;
+  margin-left: -4.5vmin;
+  border: 0.9vmin solid var(--st-a);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: kern-pulse 3.2s ease-in-out infinite;
+}
+
+@keyframes kern-pulse {
+  0%, 100% { opacity: 0.15; transform: scale(0.85); }
+  50% { opacity: 0.85; transform: scale(1.1); }
+}
+
+.calm .kern-ring {
+  animation-duration: 5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kern-ring { animation: none; opacity: 0.6; }
+}
+
+/* ---------- Kinder und Beobachtung ---------- */
+
+.kid-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 0;
+}
+
+.kid-bar label {
+  font-weight: 700;
+}
+
+.kid-bar select {
+  flex: 1 1 220px;
+  max-width: 360px;
+}
+
+.kid-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.kid-name {
+  flex: 1;
+  font-weight: 700;
+}
+
+.obs-facts {
+  margin: 0 0 8px;
+  color: var(--ink-2);
+}
+
+.obs-head {
+  margin: 18px 0 8px;
+  font-size: 16px;
+}
+
+.obs-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-button {
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 22px;
+}
+
+.tag-button[aria-pressed="true"] {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.tag-button.bad[aria-pressed="true"] {
+  background: #b4472f;
+  border-color: #b4472f;
+}
+
+.tag-button.neutral[aria-pressed="true"] {
+  background: #6b6a63;
+  border-color: #6b6a63;
+}
+
+.obs-note {
+  width: 100%;
+  font: inherit;
+  resize: vertical;
+}
+
+.hist-entry {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.hist-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hist-facts,
+.hist-note {
+  margin: 4px 0;
+}
+
+.hist-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.hist-tag {
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  background: var(--accent-soft);
+}
+
+.hist-tag.bad {
+  background: #f1d9d2;
+  color: #6f2a1a;
+}
+
+.hist-tag.neutral {
+  background: #e7e5de;
+  color: #3d3c37;
+}
+
+/* Druckansicht des Verlaufs */
+#printArea {
+  display: none;
+}
+
+@media print {
+  body.printing > *:not(#printArea) {
+    display: none !important;
+  }
+
+  body.printing #printArea {
+    display: block;
+    padding: 16px;
+    color: #000;
+    background: #fff;
+    font-size: 12px;
+  }
+
+  #printArea table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  #printArea th,
+  #printArea td {
+    padding: 4px 6px;
+    border: 1px solid #999;
+    text-align: left;
+    vertical-align: top;
+  }
+}

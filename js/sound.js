@@ -85,6 +85,9 @@ function loadSounds() {
   const ctx = getAudio();
   if (!ctx || loading) return loading;
 
+  // Berechnete Klänge (klangwerk.js) sind sofort da, ohne Dateien zu laden
+  if (typeof buildSynth === "function") buildSynth(ctx);
+
   loading = Promise.all(ALL_CLIPS.map(async name => {
     try {
       const response = await fetch("klang/" + name + ".m4a");
@@ -269,6 +272,28 @@ const Sounds = {
 
   remind() {
     note("chime", 76, { volume: 0.35, reverb: 0.5 });
+  },
+
+  /* Berechnete Klänge (klangwerk.js) */
+
+  /* Start- und Endsignal der Geschichten: Klangschale */
+  bowl() {
+    play("syn-schale", { volume: 0.8, reverb: 0.5 });
+  },
+
+  /* Glöckchen, Tonhöhe nach Nummer (C-Dur-Pentatonik) */
+  bell(i = 0) {
+    play("syn-glocke-" + (1 + (i % 4)), { volume: 0.7, reverb: 0.5 });
+  },
+
+  /* Seifenblase platzt */
+  bubble() {
+    play(pick(["syn-plopp-1", "syn-plopp-2", "syn-plopp-3"]), { volume: 0.7, reverb: 0.3 });
+  },
+
+  /* Leiser Hinweis nach einem Kernsatz: Jetzt bist du dran */
+  hint() {
+    play("syn-glocke-1", { rate: 0.5, volume: 0.28, reverb: 0.6 });
   },
 
   /* Ein Akkord auf dem Vibraphon, Bass auf der Marimba */

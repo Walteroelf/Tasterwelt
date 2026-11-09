@@ -18,7 +18,9 @@ Für Kinder, Jugendliche und Erwachsene – mit Taster (per Kabel und Adapter od
 | **01 Geschichte** | Die nächste Seite blendet ein: Bild, Text, Sprache oder eigene Aufnahme, ggf. Video. Am Ende „Ende“, dann von vorn. | Kaffeepause, Ein Tag am Meer |
 | **02 Aufdecken** | Ein gedämpftes Feld verschwindet, das leuchtende Bild kommt hervor. Ist es frei: Glockenklang, Text wird gesprochen. Hat die Seite ein Video, läuft es als Belohnung. | alle Sammlungen mit Bildern |
 | **03 Aufbauen** | Ein Stück weiter – nach einigen Drücken das Ereignis. | **Ballon** (platzt), **Domino** (die Reihe fällt), **Rakete** (hebt ab) |
-| **04 Effekt** | Sofort ein Effekt. | **Feuerwerk**, **Wellen**, **Polarlicht**, **Lavalampe**, **Musik** (Akkord für Akkord ein ruhiges Stück), **Überraschung** (zufälliges Bild einer Sammlung) |
+| **04 Effekt** | Sofort ein Effekt. | **Feuerwerk**, **Wellen**, **Polarlicht**, **Lavalampe**, **Musik** (Akkord für Akkord ein ruhiges Stück), **Überraschung** (zufälliges Bild einer Sammlung) und vier Effekte zum Schauen: **Lichtpunkt**, **Farben fließen**, **Schwarz und Weiß**, **Seifenblasen** |
+
+**Effekte zum Schauen** bewegen sich langsam, es gibt keine Blitze. Ein Druck (oder Tipp irgendwo) genügt, es muss nichts getroffen werden: Der Lichtpunkt leuchtet auf, die Farbe wechselt, ein neues Schwarz-Weiß-Muster erscheint mit Kreiswellen (gut bei CVI, die Muster sind immer Schwarz und Weiß), eine Seifenblase platzt. Im Halten-Modus platzen die Blasen nacheinander, solange gedrückt wird. Der Bildschirm bleibt an (Wake Lock). Mit der Fachkraft für Sehen abstimmen, welche Muster passen.
 
 Die mitgelieferten Sammlungen sind Vorlagen: „Als Kopie bearbeiten“ und die Grafiken durch eigene Fotos ersetzen.
 
@@ -69,6 +71,26 @@ Ohne Taster: „Bildschirm antippen zählt auch“ ist eingeschaltet – dann is
 **Zahlen-Code** (Schalter unter „Schutz“, standardmäßig aus) – ist er an, müssen vor den Einstellungen und vor dem Haus-Knopf (Zurück) vier Zahlen eingetippt werden, die als Wörter angezeigt werden („drei – sieben – eins – vier“). So kommen Kinder nicht versehentlich aus der Übung.
 
 Noch sicherer: **Geführter Zugriff** von iPadOS (Einstellungen → Bedienungshilfen → Geführter Zugriff, dann in der App dreimal die obere Taste drücken).
+
+---
+
+## Geschichten: Kernsatz und Start-/Endsignal
+
+- **Kernsatz:** Im Editor lässt sich pro Seite „Kernsatz: danach wartet die App auf den Taster“ einschalten (in „Der Fischer und seine Frau“ ist „Butt, Butt in der See …“ schon so markiert). Nach dem Vorlesen pulsiert unten ein ruhiger Ring. Nach der eingestellten Zeit (Einstellungen → Bausteine, 5/10/20 Sekunden oder kein Hinweis) erinnert ein leiser Glockenton, bis der Taster gedrückt wird. Die Stille gehört dazu – so entsteht Raum für die Antwort mit Taster, Laut oder Blick.
+- **Start- und Endsignal** (Einstellungen → Bausteine, standardmäßig aus): Eine Klangschale erklingt beim Titel und am Ende, immer gleich. So weiß das Kind: Jetzt geht es los – jetzt ist es vorbei.
+
+---
+
+## Kinder und Beobachtung
+
+Auf der Startseite lässt sich ein **Kind** wählen („Kinder verwalten“: nur Vorname oder Kürzel). Ist ein Kind gewählt, fragt die App nach jeder Übung mit Tasterdrücken kurz: **Wie war es?**
+
+- Merkmale zum Antippen: Blick zugewandt, Lächeln, Lautiert, Atmung ruhiger, Drückt selbst, Mit Hilfe, Wartet gespannt, Spannung steigt, Wendet sich ab, Unruhe
+- Eindruck: Lief gut / Mittel / Schwierig, dazu eine Notiz
+- Die **Zahl der Drücke** und die **Dauer** trägt die App selbst ein
+- **Verlauf** pro Kind: Liste mit Überblick, **Drucken** (für Förderplan und Gespräche) und **Als Datei sichern**
+
+Ohne Kind („Ohne Kind – keine Beobachtung“) fragt die App nichts. Die Daten bleiben nur auf diesem Gerät; Einträge und Kinder lassen sich löschen.
 
 ---
 
@@ -131,9 +153,12 @@ Fotos, Videos und Aufnahmen bleiben nur auf dem Gerät (im Browser gespeichert).
 | `klang/` | Aufnahmen der Instrumente und Geräusche, Quellen in `klang/LIZENZ.md` |
 | `stimme/` | Texte der Vorlagen mit der Thorsten-Stimme |
 | `scripts/` | Skripte zum Erzeugen von Klängen und Stimme, Anleitung in `scripts/KLAENGE.md` |
+| `js/schauen.js` | Effekte zum Schauen: Lichtpunkt, Farben, Schwarz-Weiß, Seifenblasen |
+| `js/klangwerk.js` | Berechnete Klänge: Klangschale, Glöckchen, Tropfen, Blasen (ohne Dateien) |
+| `js/kinder.js` | Kinder, Beobachtung nach der Übung, Verlauf, Drucken und Sichern |
 | `js/fx.js` | Funken, Feuerwerk, Wellenringe, Rauch |
 | `js/visual.js` | Bilder und Videos anzeigen |
-| `js/db.js` | Speicherung auf dem Gerät (IndexedDB) |
+| `js/db.js` | Speicherung auf dem Gerät (IndexedDB): Sammlungen, Kinder, Beobachtungen |
 | `js/teacher.js` | Zahlen-Code und Einstellungsfenster |
 | `js/offline.js`, `sw.js` | Offline-Nutzung |
 | `schriften/` | Atkinson Hyperlegible (SIL Open Font License) |

@@ -33,7 +33,7 @@ let recorder = null;
 let recordingPage = null;
 
 function newPage(fields = {}) {
-  return { id: createId(), text: "", svg: null, image: null, audio: null, video: null, sound: null, soundBg: false, sfx: null, ...fields };
+  return { id: createId(), text: "", svg: null, image: null, audio: null, video: null, sound: null, soundBg: false, sfx: null, kern: false, ...fields };
 }
 
 function openEditor(collection) {
@@ -129,6 +129,15 @@ function renderPageRows() {
     text.addEventListener("input", () => { page.text = text.value; });
     fields.appendChild(text);
     fields.appendChild(soundRow(page));
+
+    const kern = document.createElement("label");
+    kern.className = "bg-check";
+    const kernBox = document.createElement("input");
+    kernBox.type = "checkbox";
+    kernBox.checked = Boolean(page.kern);
+    kernBox.addEventListener("change", () => { page.kern = kernBox.checked; });
+    kern.append(kernBox, " Kernsatz: danach wartet die App auf den Taster");
+    fields.appendChild(kern);
 
     const tools = document.createElement("div");
     tools.className = "page-tools";
@@ -459,6 +468,7 @@ exportButton.addEventListener("click", async () => {
       video: page.video ? await blobToDataUrl(page.video) : null,
       sound: page.sound || null,
       soundBg: Boolean(page.soundBg),
+      kern: Boolean(page.kern),
       sfx: page.sfx ? await blobToDataUrl(page.sfx) : null
     })))
   };
@@ -503,7 +513,8 @@ importInput.addEventListener("change", async () => {
         video: await dataUrlToBlob(page.video),
         sfx: await dataUrlToBlob(page.sfx),
         sound: page.sound === "__own" ? (page.sfx ? "__own" : null) : (GERAEUSCHE.some(g => g.id === page.sound) ? page.sound : null),
-        soundBg: Boolean(page.soundBg)
+        soundBg: Boolean(page.soundBg),
+        kern: Boolean(page.kern)
       })))
     };
 

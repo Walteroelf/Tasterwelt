@@ -6,7 +6,7 @@
   und bei jeder neuen Version erhöht werden – dann lädt der Browser die neue Fassung.
 */
 
-const VERSION = "8";
+const VERSION = "9";
 const APP_CACHE = "tasterwelt-app-" + VERSION;
 const MEDIA_CACHE = "tasterwelt-medien";
 
@@ -36,14 +36,17 @@ const APP_FILES = [
   "js/klang.js?v=" + VERSION,
   "js/voice.js?v=" + VERSION,
   "js/sound.js?v=" + VERSION,
+  "js/klangwerk.js?v=" + VERSION,
   "js/fx.js?v=" + VERSION,
   "js/visual.js?v=" + VERSION,
   "js/story.js?v=" + VERSION,
   "js/reveal.js?v=" + VERSION,
   "js/build.js?v=" + VERSION,
   "js/effect.js?v=" + VERSION,
+  "js/schauen.js?v=" + VERSION,
   "js/app.js?v=" + VERSION,
   "js/switch.js?v=" + VERSION,
+  "js/kinder.js?v=" + VERSION,
   "js/editor.js?v=" + VERSION,
   "js/teacher.js?v=" + VERSION,
   "js/offline.js?v=" + VERSION

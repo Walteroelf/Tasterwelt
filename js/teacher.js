@@ -113,7 +113,9 @@ const form = {
   hold: document.getElementById("holdToggle"),
   calm: document.getElementById("calmToggle"),
   board: document.getElementById("boardToggle"),
-  codeLock: document.getElementById("codeLockToggle")
+  codeLock: document.getElementById("codeLockToggle"),
+  ritual: document.getElementById("ritualToggle"),
+  kernWait: document.getElementById("kernWaitSelect")
 };
 
 function applySettingsToForm() {
@@ -154,7 +156,7 @@ function renderKeyList() {
 for (const [name, input] of Object.entries(form)) {
   input.addEventListener("change", () => {
     settings[name] = input.type === "checkbox" ? input.checked : input.value;
-    if (name === "lockMs" || name === "reminder") settings[name] = Number(input.value);
+    if (name === "lockMs" || name === "reminder" || name === "kernWait") settings[name] = Number(input.value);
 
     // Ohne Taste in der Liste würde gar nichts mehr zählen
     if (name === "anyKey" && !settings.anyKey && settings.keys.length === 0) settings.keys = [" ", "Enter"];

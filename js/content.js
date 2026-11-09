@@ -11,6 +11,8 @@ function builtinPages(list) {
     svg: ILL[svg] ? svg : null,
     imageUrl: ILL[svg] ? null : "bilder/" + svg + ".jpg",
     text,
+    // Kernsatz: nach dem Vorlesen wartet die App auf den Taster (siehe story.js)
+    kern: /Butt, Butt in der See/.test(text),
     sound: sound || null,
     soundBg: Boolean(soundBg),
     sfx: null,
@@ -150,5 +152,10 @@ const EFFECT_VARIANTS = [
   { id: "wellen", svg: "wellenkreise", name: "Wellen", note: "Tropfen fallen ins Wasser" },
   { id: "polarlicht", svg: "polarlicht", name: "Polarlicht", note: "Lichtschleier am Himmel" },
   { id: "lava", svg: "lavalampe", name: "Lavalampe", note: "Ruhige Formen kommen in Bewegung" },
-  { id: "musik", svg: "musik", name: "Musik", note: "Akkord für Akkord ein ruhiges Stück" }
+  { id: "musik", svg: "musik", name: "Musik", note: "Akkord für Akkord ein ruhiges Stück" },
+  // Zum Schauen (schauen.js): langsam, ohne Blitze, antippen genügt
+  { id: "licht", svg: "lichtpunkt", name: "Lichtpunkt", note: "Einem Licht mit den Augen folgen", screen: true },
+  { id: "farben", svg: "farbfluss", name: "Farben fließen", note: "Große, ruhige Farbflächen", screen: true },
+  { id: "kontrast", svg: "kontrast", name: "Schwarz und Weiß", note: "Starke Kontraste, gut bei CVI", screen: true },
+  { id: "blasen", svg: "blasen", name: "Seifenblasen", note: "Eine Blase nach der anderen platzt", screen: true }
 ];

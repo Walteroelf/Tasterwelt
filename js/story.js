@@ -14,6 +14,34 @@ function createStoryGame(collection) {
   let busy = false;
   let speechTimer = null;
   let shownPage = null;
+  let pageToken = 0;
+  let kernRing = null;
+  let kernTimer = null;
+
+  /* Kernsatz: Nach dem Vorlesen wartet die App. Ein ruhiger Ring pulsiert, und nach
+     der eingestellten Zeit erinnert ein leiser Glockenton – bis der Taster gedrückt wird. */
+  function clearKern() {
+    clearTimeout(kernTimer);
+    kernTimer = null;
+    if (kernRing) kernRing.remove();
+    kernRing = null;
+  }
+
+  function startKernWait() {
+    clearKern();
+    kernRing = document.createElement("div");
+    kernRing.className = "kern-ring";
+    kernRing.setAttribute("aria-hidden", "true");
+    stage.appendChild(kernRing);
+
+    const seconds = Number(settings.kernWait);
+    if (!seconds) return;
+    const remind = () => {
+      Sounds.hint();
+      kernTimer = setTimeout(remind, seconds * 1000);
+    };
+    kernTimer = setTimeout(remind, seconds * 1000);
+  }
 
   function showElement(element) {
     element.classList.add("story-page", "enter");
@@ -58,6 +86,7 @@ function createStoryGame(collection) {
     showElement(page);
     shownPage = null;
     updateProgress();
+    if (settings.ritual) Sounds.bowl();
   }
 
   /* Gleiches Bild wie auf der vorigen Seite: Bild bleibt stehen, nur der Satz wechselt */
@@ -87,6 +116,7 @@ function createStoryGame(collection) {
     }
     shownPage = data;
     updateProgress();
+    const token = ++pageToken;
 
     // Geräusch zuerst, die Stimme setzt kurz danach ein
     const soundDone = data.sound ? startPageSound(data) : Promise.resolve(0);
@@ -101,7 +131,12 @@ function createStoryGame(collection) {
       soundDone.then(duration => {
         const wait = duration ? Math.min(duration, 4) * 550 : 0;
         clearTimeout(speechTimer);
-        speechTimer = setTimeout(() => { if (current === page) sayPage(data); }, wait);
+        speechTimer = setTimeout(() => {
+          if (current !== page || token !== pageToken) return;
+          Promise.resolve(sayPage(data)).then(() => {
+            if (data.kern && token === pageToken) startKernWait();
+          });
+        }, wait);
       });
     }
   }
@@ -113,7 +148,8 @@ function createStoryGame(collection) {
     shownPage = null;
     updateProgress();
     stopAmbient(2);
-    Sounds.ending();
+    if (settings.ritual) Sounds.bowl();
+    else Sounds.ending();
   }
 
   function updateProgress() {
@@ -141,6 +177,8 @@ function createStoryGame(collection) {
       setTimeout(() => { busy = false; }, 500);
 
       clearTimeout(speechTimer);
+      pageToken++;
+      clearKern();
       stopVoice();
       stopPageSound();
       index++;
@@ -154,6 +192,8 @@ function createStoryGame(collection) {
 
     stop() {
       clearTimeout(speechTimer);
+      pageToken++;
+      clearKern();
       stopVoice();
       stopPageSound(0.2);
       stopAmbient(0.5);

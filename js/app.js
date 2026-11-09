@@ -31,7 +31,10 @@ const DEFAULT_SETTINGS = {
   hold: false,
   calm: false,
   board: false,
-  codeLock: false
+  codeLock: false,
+  ritual: false,
+  kernWait: 10,
+  kidId: ""
 };
 
 const settings = loadSettings();
@@ -64,6 +67,7 @@ const pressDot = document.getElementById("pressDot");
 
 let ownCollections = [];
 let activeGame = null;
+let activeMeta = null;   // Titel, Art, Drücke und Dauer der laufenden Übung (für die Beobachtung, kinder.js)
 let reminderTimer = null;
 let dotTimer = null;
 
@@ -120,7 +124,7 @@ async function renderHome() {
       thumbPage: coverPage(collection),
       title: collection.name,
       note: pagesNote(collection),
-      onClick: () => startGame(createStoryGame(collection))
+      onClick: () => startGame(createStoryGame(collection), { title: collection.name, kind: "Geschichte" })
     }));
 
     if (!collection.storyOnly && collection.pages.some(p => hasPicture(p) || p.video)) {
@@ -128,7 +132,7 @@ async function renderHome() {
         thumbPage: coverPage(collection, 2),
         title: collection.name,
         note: pagesNote(collection),
-        onClick: () => startGame(createRevealGame(collection))
+        onClick: () => startGame(createRevealGame(collection), { title: collection.name, kind: "Aufdecken" })
       }));
     }
   });
@@ -138,7 +142,7 @@ async function renderHome() {
       thumbPage: { svg: variant.svg },
       title: variant.name,
       note: variant.note,
-      onClick: () => startGame(createBuildGame(variant.id))
+      onClick: () => startGame(createBuildGame(variant.id), { title: variant.name, kind: "Aufbauen" })
     }));
   });
 
@@ -147,7 +151,10 @@ async function renderHome() {
       thumbPage: { svg: variant.svg },
       title: variant.name,
       note: variant.note,
-      onClick: () => startGame(createEffectGame(variant.id))
+      onClick: () => startGame(
+        variant.screen ? createScreenGame(variant.id) : createEffectGame(variant.id),
+        { title: variant.name, kind: "Effekt" }
+      )
     }));
   });
 
@@ -156,11 +163,12 @@ async function renderHome() {
       thumbPage: coverPage(collection, 1),
       title: "Überraschung",
       note: collection.name + " – zufällige Bilder",
-      onClick: () => startGame(createEffectGame("ueberraschung", collection))
+      onClick: () => startGame(createEffectGame("ueberraschung", collection), { title: "Überraschung: " + collection.name, kind: "Effekt" })
     }));
   });
 
   renderOwnList();
+  if (typeof renderKidBar === "function") renderKidBar();
 }
 
 function renderOwnList() {
@@ -192,11 +200,12 @@ function renderOwnList() {
 
 /* ---------- Übung starten und beenden ---------- */
 
-function startGame(game) {
+function startGame(game, meta) {
   unlockAudio();
   stopGame();
 
   activeGame = game;
+  activeMeta = meta ? { ...meta, presses: 0, startedAt: Date.now() } : null;
   stage.innerHTML = "";
   document.body.classList.toggle("calm", settings.calm);
   document.body.classList.toggle("board", settings.board);
@@ -224,10 +233,17 @@ function stopGame() {
 }
 
 function backToHome() {
+  // Beobachtung für das gewählte Kind (kinder.js): nur wenn wirklich gedrückt wurde
+  const meta = activeMeta;
+  activeMeta = null;
+  if (meta) meta.seconds = Math.round((Date.now() - meta.startedAt) / 1000);
+
   stopGame();
   playScreen.classList.add("hidden");
   homeScreen.classList.remove("hidden");
   renderHome();
+
+  if (meta && typeof askObservation === "function") askObservation(meta);
 }
 
 /* Wird von switch.js aufgerufen, wenn ein Druck zählt (nach der Sperrzeit) */
@@ -235,6 +251,7 @@ function gamePress() {
   if (!activeGame) return;
   reminder.classList.add("hidden");
   restartReminder();
+  if (activeMeta) activeMeta.presses++;
   activeGame.press();
 }
 

@@ -150,6 +150,31 @@ const ILL = {
     <rect class="b" x="138" y="78" width="14" height="32" rx="7"/>
     <rect class="a" x="164" y="62" width="14" height="48" rx="7" opacity=".7"/>`),
 
+  lichtpunkt: ill(`
+    <circle class="a" cx="100" cy="75" r="60" opacity=".12"/>
+    <circle class="a" cx="100" cy="75" r="42" opacity=".25"/>
+    <circle class="a" cx="100" cy="75" r="26" opacity=".6"/>
+    <circle class="a" cx="100" cy="75" r="12"/>`),
+
+  farbfluss: ill(`
+    <circle class="a" cx="78" cy="68" r="46" opacity=".85"/>
+    <circle class="b" cx="124" cy="68" r="46" opacity=".75"/>
+    <circle class="c" cx="101" cy="98" r="40" opacity=".7"/>`),
+
+  kontrast: ill(`
+    <circle fill="#fff" cx="100" cy="75" r="62"/>
+    <circle fill="#000" cx="100" cy="75" r="50"/>
+    <circle fill="#fff" cx="100" cy="75" r="38"/>
+    <circle fill="#000" cx="100" cy="75" r="26"/>
+    <circle fill="#fff" cx="100" cy="75" r="14"/>`),
+
+  blasen: ill(`
+    <circle class="sb" cx="66" cy="92" r="30" stroke-width="4"/>
+    <circle class="sa" cx="132" cy="58" r="38" stroke-width="4"/>
+    <circle class="sc" cx="124" cy="114" r="16" stroke-width="4"/>
+    <path class="sb" d="M50 82 q4 -12 16 -14" stroke-width="4"/>
+    <path class="sa" d="M112 46 q8 -10 20 -10" stroke-width="4"/>`),
+
   ueberraschung: ill(`
     <path class="a" d="M100 30 L110 64 L146 64 L117 84 L128 118 L100 98 L72 118 L83 84 L54 64 L90 64 Z"/>
     <circle class="b" cx="44" cy="40" r="5"/><circle class="c" cx="160" cy="112" r="6"/><circle class="b" cx="158" cy="34" r="3"/>`)
