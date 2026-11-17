@@ -47,6 +47,7 @@ const APP_FILES = [
   "js/app.js?v=" + VERSION,
   "js/switch.js?v=" + VERSION,
   "js/kinder.js?v=" + VERSION,
+  "js/schutz.js?v=" + VERSION,
   "js/editor.js?v=" + VERSION,
   "js/teacher.js?v=" + VERSION,
   "js/offline.js?v=" + VERSION

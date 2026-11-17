@@ -74,6 +74,15 @@ Noch sicherer: **Geführter Zugriff** von iPadOS (Einstellungen → Bedienungshi
 
 ---
 
+## Schutz vor Verstellen und Verlassen
+
+- **Bildschirm bleibt an:** Bei jeder Übung hält die App den Bildschirm wach (Wake Lock), damit sich das iPad nicht mitten in der Übung abschaltet. Kommt die App aus dem Hintergrund zurück, wird die Sperre neu angefordert. Wo der Browser das nicht erlaubt, gilt die Sperrzeit des Geräts.
+- **Zurück-Wischen wird abgefangen:** In einer Übung fragt die App „Übung beenden?“ (mit Zahlen-Code, falls eingeschaltet). Auf der Startseite fragt sie „App schließen?“; ein zweites Zurück schließt die App.
+- **Einstellungen nur durch Halten:** Das Zahnrad in der Übung öffnet die Einstellungen erst nach **3 Sekunden Halten**. Ein Ring um das Zahnrad füllt sich und zeigt, dass es gleich so weit ist. Zu früh losgelassen: kurzer Hinweis. Auf der Startseite genügt ein Tippen. Zusätzlich kann der Zahlen-Code eingeschaltet werden.
+- **Datenschutz:** Auf der Startseite unten („Datenschutz“) steht konkret, was gespeichert wird, wann Daten das Gerät verlassen und wie man sie löscht.
+
+---
+
 ## Geschichten: Kernsatz und Start-/Endsignal
 
 - **Kernsatz:** Im Editor lässt sich pro Seite „Kernsatz: danach wartet die App auf den Taster“ einschalten (in „Der Fischer und seine Frau“ ist „Butt, Butt in der See …“ schon so markiert). Nach dem Vorlesen pulsiert unten ein ruhiger Ring. Nach der eingestellten Zeit (Einstellungen → Bausteine, 5/10/20 Sekunden oder kein Hinweis) erinnert ein leiser Glockenton, bis der Taster gedrückt wird. Die Stille gehört dazu – so entsteht Raum für die Antwort mit Taster, Laut oder Blick.
@@ -131,6 +140,14 @@ Fotos, Videos und Aufnahmen bleiben nur auf dem Gerät (im Browser gespeichert).
 
 ---
 
+## Dank und Anregungen
+
+Viele Ideen der Versionen 8 – ruhige Effekte zum Schauen (Lichtpunkt, Farben, Schwarz-Weiß-Kontraste, Seifenblasen), Kernsatz mit Wartepause, Start- und Endsignal, Beobachtung pro Kind und berechnete Klänge – stammen aus den **Basalen Angeboten** von **[schul-tools.eu](https://schul-tools.eu/)** (Fabian Nebel und Johannes Schüler). Sie haben der Übernahme zugestimmt. Vielen Dank!
+
+Das Konzept der Basalen Aktionsgeschichten (Kernsatz, gleichbleibende Rituale) geht auf **Dr. Nicol Goudarzi** zurück (*Basale Aktionsgeschichten*, von Loeper 2015).
+
+---
+
 ## Dateien
 
 | Datei | Inhalt |
@@ -156,6 +173,7 @@ Fotos, Videos und Aufnahmen bleiben nur auf dem Gerät (im Browser gespeichert).
 | `js/schauen.js` | Effekte zum Schauen: Lichtpunkt, Farben, Schwarz-Weiß, Seifenblasen |
 | `js/klangwerk.js` | Berechnete Klänge: Klangschale, Glöckchen, Tropfen, Blasen (ohne Dateien) |
 | `js/kinder.js` | Kinder, Beobachtung nach der Übung, Verlauf, Drucken und Sichern |
+| `js/schutz.js` | Zurück-Wischen abfangen, Einstellungen 3 Sekunden halten, Datenschutzhinweis |
 | `js/fx.js` | Funken, Feuerwerk, Wellenringe, Rauch |
 | `js/visual.js` | Bilder und Videos anzeigen |
 | `js/db.js` | Speicherung auf dem Gerät (IndexedDB): Sammlungen, Kinder, Beobachtungen |

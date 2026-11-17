@@ -1428,3 +1428,84 @@ details.hint summary {
     vertical-align: top;
   }
 }
+
+/* ---------- Zahnrad in der Übung: 3 Sekunden halten, Ring füllt sich ---------- */
+
+#playGearButton {
+  position: relative;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.stage-button .hold-ring {
+  position: absolute;
+  inset: -5px;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  transform: rotate(-90deg);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.hold-ring circle {
+  fill: none;
+  stroke: var(--st-a);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 157.08;
+  stroke-dashoffset: 157.08;
+}
+
+.stage-button.holding {
+  opacity: 1;
+}
+
+.stage-button.holding .hold-ring circle {
+  animation: hold-fill 3s linear forwards;
+}
+
+@keyframes hold-fill {
+  to { stroke-dashoffset: 0; }
+}
+
+.hold-hint {
+  position: absolute;
+  top: calc(max(12px, env(safe-area-inset-top, 0px)) + 58px);
+  right: max(12px, env(safe-area-inset-right, 0px));
+  z-index: 21;
+  padding: 8px 14px;
+  border: 1px solid var(--st-text);
+  border-radius: 12px;
+  background: var(--st-bg);
+  color: var(--st-text);
+  font-size: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.hold-hint.show {
+  opacity: 1;
+}
+
+/* ---------- Datenschutz ---------- */
+
+.privacy h3 {
+  margin: 22px 0 6px;
+  font-size: 17px;
+}
+
+.privacy ul {
+  margin: 6px 0;
+  padding-left: 22px;
+}
+
+.privacy li {
+  margin: 4px 0;
+}
+
+.privacy a {
+  color: var(--accent);
+}

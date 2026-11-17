@@ -93,7 +93,7 @@
           Tipp: App über „Teilen → Zum Home-Bildschirm“ ablegen, dann läuft sie auch offline.
         </p>
       </section>
-      <p class="copyright-line" style="margin:16px 0 0;font-size:.8rem;opacity:.75;text-align:center;line-height:1.4">© 2026 Walteroelf · Work in Progress · <a href="https://github.com/Walteroelf/Tasterwelt/blob/main/LICENSE.md" target="_blank" rel="noopener" style="color:inherit">CC BY-NC-SA 4.0</a></p>
+      <p class="copyright-line" style="margin:16px 0 0;font-size:.8rem;opacity:.75;text-align:center;line-height:1.4">© 2026 Walteroelf · Work in Progress · <a href="https://github.com/Walteroelf/Tasterwelt/blob/main/LICENSE.md" target="_blank" rel="noopener" style="color:inherit">CC BY-NC-SA 4.0</a><br><a href="#" id="privacyLink" style="color:inherit">Datenschutz</a> · Anregungen und Ideen: <a href="https://schul-tools.eu/" target="_blank" rel="noopener" style="color:inherit">schul-tools.eu</a> (Fabian Nebel und Johannes Schüler)</p>
     </div>
   </div>
 
@@ -406,6 +406,59 @@
     </div>
   </div>
 
+  <!-- ===================== Zurück-Wischen ===================== -->
+  <div class="modal-backdrop hidden" id="exitScreen"><div class="modal" id="exitModal"></div></div>
+
+  <!-- ===================== Datenschutz ===================== -->
+  <div class="modal-backdrop hidden" id="privacyScreen">
+    <div class="modal privacy">
+      <h2>Datenschutz</h2>
+      <p><strong>Die Tasterwelt speichert alles nur auf diesem Gerät.</strong> Es gibt keine Anmeldung, keine Werbung, keine Statistik und keine Cookies. Es werden keine Daten an einen Server der Tasterwelt gesendet.</p>
+
+      <h3>Was auf dem Gerät gespeichert wird</h3>
+      <ul>
+        <li><strong>Einstellungen</strong> (zum Beispiel Sperrzeit, Farbwelt, gewähltes Kind).</li>
+        <li><strong>Eigene Sammlungen</strong> mit Fotos, Videos, Sprachaufnahmen, Geräuschen und Texten.</li>
+        <li><strong>Kinder und Beobachtungen:</strong> Name oder Kürzel, Merkmale, Eindruck, Notiz, Zahl der Drücke und Dauer.</li>
+        <li><strong>Eine Kopie der App,</strong> damit sie ohne Internet läuft.</li>
+      </ul>
+      <p>Bitte bei Kindern nur Vornamen oder Kürzel eintragen. Fotos und Aufnahmen von Personen nur mit Einverständnis verwenden.</p>
+
+      <h3>Was die App nicht tut</h3>
+      <ul>
+        <li>Kein Tracking, keine Analyse, keine Weitergabe von Daten.</li>
+        <li>Keine Schriften, Skripte oder Bilder von anderen Anbietern. Alles liegt in der App.</li>
+        <li>Das Mikrofon wird nur beim Aufnehmen im Editor benutzt, nachdem das Gerät gefragt hat. Aufnahmen bleiben auf dem Gerät.</li>
+      </ul>
+
+      <h3>Wann Daten das Gerät verlassen</h3>
+      <p>Nur, wenn du es selbst auslöst: „Exportieren“ einer Sammlung, „Als Datei sichern“ oder „Drucken“ bei den Beobachtungen. Die Datei liegt dann bei dir (zum Beispiel per AirDrop oder E-Mail) – bitte sorgsam damit umgehen.</p>
+
+      <h3>Auslieferung der App</h3>
+      <p>Die App wird über GitHub Pages (GitHub, Inc., USA) bereitgestellt. Beim Öffnen mit Internet – auch bei jedem Start vom Home-Bildschirm, wenn sie nach einer neuen Fassung sieht – verarbeitet GitHub technisch bedingt die IP-Adresse des Geräts. Danach läuft die App ohne Internet. Inhalte aus der App gelangen dabei nicht zu GitHub.</p>
+
+      <h3>Vorlesen</h3>
+      <p>Die Texte der Vorlagen sind mit einer natürlichen Stimme vorab aufgenommen und liegen in der App. Eigene Texte liest die Sprachausgabe des Geräts vor. Wie das Betriebssystem seine Stimmen verarbeitet, regelt das Betriebssystem, nicht die App.</p>
+
+      <h3>Löschen und Sichern</h3>
+      <ul>
+        <li>Ein Kind mit allen Beobachtungen löschst du unter „Kinder verwalten“, einzelne Einträge im Verlauf, eine Sammlung im Editor.</li>
+        <li>Alles auf einmal: Website-Daten in Safari löschen oder die App vom Home-Bildschirm entfernen.</li>
+        <li>Umgekehrt gilt: Wenn Website-Daten gelöscht werden oder das Gerät verloren geht, sind die Daten weg. Bitte Beobachtungen und Sammlungen regelmäßig als Datei sichern.</li>
+        <li>Im privaten Modus von Safari wird nichts dauerhaft gespeichert.</li>
+      </ul>
+
+      <h3>Quellen und Lizenzen</h3>
+      <p>Bilder sind gemeinfrei, Klänge CC0 oder gemeinfrei (Einzelnachweise im Projekt unter <em>bilder/LIZENZ.md</em> und <em>klang/LIZENZ.md</em>). Schrift: Atkinson Hyperlegible (SIL Open Font License). Die App steht unter CC BY-NC-SA 4.0. Anregungen: <a href="https://schul-tools.eu/" target="_blank" rel="noopener">schul-tools.eu</a>.</p>
+
+      <p class="hint">Fragen und Fehler: <a href="https://github.com/Walteroelf/Tasterwelt" target="_blank" rel="noopener">github.com/Walteroelf/Tasterwelt</a> · Stand: November 2026</p>
+
+      <div class="button-row modal-actions">
+        <button id="privacyCloseButton" class="primary">Fertig</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================== Kinder und Beobachtung ===================== -->
   <div class="modal-backdrop hidden" id="kidScreen"><div class="modal" id="kidModal"></div></div>
   <div class="modal-backdrop hidden" id="histScreen"><div class="modal" id="histModal"></div></div>
@@ -430,6 +483,7 @@
   <script src="js/app.js?v=9"></script>
   <script src="js/switch.js?v=9"></script>
   <script src="js/kinder.js?v=9"></script>
+  <script src="js/schutz.js?v=9"></script>
   <script src="js/editor.js?v=9"></script>
   <script src="js/teacher.js?v=9"></script>
   <script src="js/offline.js?v=9"></script>

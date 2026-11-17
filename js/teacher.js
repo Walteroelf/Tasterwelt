@@ -24,7 +24,7 @@ function requestSettings() {
 }
 
 document.getElementById("homeGearButton").addEventListener("click", requestSettings);
-document.getElementById("playGearButton").addEventListener("click", requestSettings);
+// Zahnrad in der Übung: 3 Sekunden halten (schutz.js)
 
 keypad.addEventListener("click", event => {
   const key = event.target.closest("button[data-key]");

@@ -18,7 +18,6 @@ function createScreenGame(variant) {
   let lastFrame = 0;
   let clock = 0;
   let holdTimer = null;
-  let wakeLock = null;
   let game = null;
 
   const rgbOf = hex => {
@@ -379,14 +378,6 @@ function createScreenGame(variant) {
     game.press(canvas.clientWidth, canvas.clientHeight);
   }
 
-  async function keepAwake() {
-    try {
-      if (navigator.wakeLock) wakeLock = await navigator.wakeLock.request("screen");
-    } catch (error) {
-      // nicht überall erlaubt – dann gilt die Sperrzeit des Geräts
-    }
-  }
-
   return {
     start(stageElement) {
       wrap = document.createElement("div");
@@ -402,7 +393,6 @@ function createScreenGame(variant) {
       game = { licht: lightGame, farben: colorGame, kontrast: contrastGame, blasen: bubbleGame }[variant]();
       lastFrame = performance.now();
       raf = requestAnimationFrame(frame);
-      keepAwake();
     },
 
     press() {
@@ -422,10 +412,6 @@ function createScreenGame(variant) {
       clearInterval(holdTimer);
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
-      if (wakeLock) {
-        wakeLock.release().catch(() => {});
-        wakeLock = null;
-      }
     }
   };
 }

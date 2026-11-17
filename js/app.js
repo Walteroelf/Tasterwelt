@@ -198,6 +198,32 @@ function renderOwnList() {
   });
 }
 
+/* ---------- Bildschirm bleibt bei jeder Übung an ----------
+   Sonst schaltet sich das iPad nach der Sperrzeit mitten in der Übung ab.
+   Der Browser gibt die Sperre frei, wenn die App in den Hintergrund geht –
+   dann beim Zurückkehren neu anfordern. Nicht überall erlaubt: dann gilt die Sperrzeit des Geräts. */
+
+let wakeLock = null;
+
+async function keepAwake() {
+  try {
+    if (!navigator.wakeLock || wakeLock) return;
+    wakeLock = await navigator.wakeLock.request("screen");
+    wakeLock.addEventListener("release", () => { wakeLock = null; });
+  } catch (error) {
+    wakeLock = null;
+  }
+}
+
+function releaseAwake() {
+  if (wakeLock) wakeLock.release().catch(() => {});
+  wakeLock = null;
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && activeGame) keepAwake();
+});
+
 /* ---------- Übung starten und beenden ---------- */
 
 function startGame(game, meta) {
@@ -220,12 +246,14 @@ function startGame(game, meta) {
   Fx.clear();
   game.start(stage);
   restartReminder();
+  keepAwake();
 }
 
 function stopGame() {
   if (!activeGame) return;
   activeGame.stop();
   activeGame = null;
+  releaseAwake();
   Fx.clear();
   stage.innerHTML = "";
   clearTimeout(reminderTimer);
