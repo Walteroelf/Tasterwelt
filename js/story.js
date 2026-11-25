@@ -181,6 +181,7 @@ function createStoryGame(collection) {
       clearKern();
       stopVoice();
       stopPageSound();
+      touchAmbient();
       index++;
       if (index > pages.length) index = 0;
 

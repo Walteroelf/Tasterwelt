@@ -158,6 +158,13 @@ function play(name, { start = 0, rate = 1, volume = 1, reverb = 0.3, offset = 0,
   if (duration) source.stop(t + duration + 0.05);
 
   return {
+    /* Sofort und endgültig beenden (App im Hintergrund, Seite verlassen) */
+    kill() {
+      source.loop = false;
+      try { source.stop(); } catch (error) { /* schon beendet */ }
+      try { gain.disconnect(); } catch (error) { /* schon getrennt */ }
+    },
+
     stop(release = 0.6) {
       const now = ctx.currentTime;
       // Schleife sofort ausschalten: Selbst wenn das Gerät den Stopp-Befehl nicht umsetzt,
@@ -357,10 +364,38 @@ async function soundBuffer(page) {
   return ownBuffers.get(page.sfx);
 }
 
+const AMBIENT_MAX_MS = 4 * 60 * 1000;   // ohne Tasterdruck endet ein Dauergeräusch nach 4 Minuten
+let ambientTimer = null;
+
 function stopAmbient(release = 1.5) {
+  clearTimeout(ambientTimer);
+  ambientTimer = null;
   if (ambient) ambient.stop(release);
   ambient = null;
 }
+
+/* Bei jedem Tasterdruck neu starten (story.js) */
+function touchAmbient() {
+  if (!ambient) return;
+  clearTimeout(ambientTimer);
+  ambientTimer = setTimeout(() => stopAmbient(3), AMBIENT_MAX_MS);
+}
+
+/* Alles sofort still: App geht in den Hintergrund oder wird verlassen */
+function silenceAll() {
+  clearTimeout(ambientTimer);
+  ambientTimer = null;
+  if (ambient) ambient.kill();
+  ambient = null;
+  if (onceSound) onceSound.kill();
+  onceSound = null;
+  stopVoice();
+  if (audioContext && audioContext.state === "running") audioContext.suspend().catch(() => {});
+}
+
+document.addEventListener("visibilitychange", () => { if (document.hidden) silenceAll(); });
+window.addEventListener("pagehide", silenceAll);
+window.addEventListener("pageshow", event => { if (event.persisted) silenceAll(); });
 
 function stopPageSound(release = 0.4) {
   if (onceSound) onceSound.stop(release);
@@ -391,7 +426,10 @@ async function startPageSound(page, { preview = false } = {}) {
   if (page.soundBg && !preview) {
     stopAmbient(1.2);
     const volume = ambientVolume(page.sound);
-    if (volume > 0) ambient = play(buffer, { loop: true, volume, fadeIn: 1.5, reverb: 0.08 });
+    if (volume > 0) {
+      ambient = play(buffer, { loop: true, volume, fadeIn: 1.5, reverb: 0.08 });
+      touchAmbient();
+    }
     return 0;
   }
 
