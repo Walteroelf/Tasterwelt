@@ -26,6 +26,7 @@ const DEFAULT_SETTINGS = {
   rate: "0.85",
   sounds: true,
   pop: "laut",
+  ambient: "normal",
   tiles: "6",
   steps: "5",
   hold: false,

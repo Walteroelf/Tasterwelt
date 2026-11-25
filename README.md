@@ -61,6 +61,7 @@ Ohne Taster: „Bildschirm antippen zählt auch“ ist eingeschaltet – dann is
 - **Natürliche Stimme für die Vorlagen** (Thorsten-Voice) an/aus.
 - **Gerätestimme für eigene Texte:** Auswahl aller deutschen Stimmen des iPads, mit „Probe hören“. Bessere Stimmen lassen sich unter Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Deutsch laden (z. B. Anna oder Helena „Erweitert“).
 - **Sprechtempo** und **Klänge** an/aus.
+- **Hintergrundgeräusche in Geschichten:** aus, leise, normal oder laut (der Wind ist von sich aus deutlich leiser gemischt, weil er im Bereich der Sprache liegt).
 - **Knall beim Ballon:** leise, normal oder laut (Standard: laut). Beim Umschalten ist der Knall einmal zu hören.
 
 **Bausteine**

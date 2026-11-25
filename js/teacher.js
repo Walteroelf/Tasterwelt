@@ -108,6 +108,7 @@ const form = {
   rate: document.getElementById("rateSelect"),
   sounds: document.getElementById("soundsToggle"),
   pop: document.getElementById("popSelect"),
+  ambient: document.getElementById("ambientSelect"),
   tiles: document.getElementById("tilesSelect"),
   steps: document.getElementById("stepsSelect"),
   hold: document.getElementById("holdToggle"),
