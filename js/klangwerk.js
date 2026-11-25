@@ -87,25 +87,54 @@ function buildSynth(ctx) {
     });
   }
 
-  /* Wind: gefiltertes Rauschen mit ruhigen Böen, nahtlos als Dauergeräusch (12 s).
-     Die Böen haben ganze Perioden, das Rauschen wird am Schleifenende überblendet. */
+  /* Wind: Rauschen durch einen schmalen Filter, dessen Frequenz langsam wandert (Heulen und
+     Pfeifen), mit unregelmäßigen Böen und feinen Turbulenzen. Kein tiefes Grollen und kein
+     gleichmäßiges An- und Abschwellen – sonst klingt es nach Brandung. 12 s, nahtlos. */
   function wind() {
     const seconds = 12;
     const n = Math.floor(seconds * sr);
     const over = Math.floor(0.8 * sr);
     const raw = new Float32Array(n + over);
-    const k1 = 1 - Math.exp(-PI2 * 450 / sr);
-    const k2 = 1 - Math.exp(-PI2 * 1700 / sr);
-    let a = 0, b = 0, c = 0, d = 0;
+
+    // Zustandsfilter (Chamberlin): liefert Bandpass mit einstellbarer Güte
+    const filter = () => ({ low: 0, band: 0 });
+    const body = filter(), whistle = filter(), rumble = filter();
+    const step = (s, x, fc, q) => {
+      const f = 2 * Math.sin(Math.PI * fc / sr);
+      s.low += f * s.band;
+      const high = x - s.low - s.band / q;
+      s.band += f * high;
+      return s.band;
+    };
+
+    // ganze Perioden pro Schleife (1, 2, 3, 5, 8, 13 mal): unregelmäßig, aber nahtlos
+    const waves = [[1, 0.34], [2, 0.26], [3, 0.2], [5, 0.12], [8, 0.06], [13, 0.03]]
+      .map(([cycles, amp]) => ({ cycles, amp, phase: Math.random() * PI2 }));
+    const slow = t => waves.reduce((sum, w) => sum + w.amp * Math.sin(PI2 * w.cycles * t / seconds + w.phase), 0);
+
+    let turbulence = 0;
+    const kTurb = 1 - Math.exp(-PI2 * 5 / sr);
+    let prevHP = 0, prevIn = 0;
 
     for (let i = 0; i < raw.length; i++) {
-      const x = Math.random() * 2 - 1;
-      a += (x - a) * k1; b += (a - b) * k1;     // tiefes Rauschen
-      c += (x - c) * k2; d += (c - d) * k2;     // höheres Pfeifen
       const t = i / sr;
-      const gust = 0.55 + 0.25 * Math.sin(PI2 * 3 * t / seconds + 1) + 0.2 * Math.sin(PI2 * 5 * t / seconds + 2);
-      const whistle = 0.5 + 0.5 * Math.sin(PI2 * 2 * t / seconds);
-      raw[i] = (b * 3 + (d - b) * 1.1 * whistle) * gust;
+      const x = Math.random() * 2 - 1;
+      turbulence += (x - turbulence) * kTurb;
+
+      const g = slow(t);                                         // -1 … 1, unregelmäßig
+      const gust = Math.max(0.12, 0.62 + 0.42 * g + 2.2 * turbulence);
+
+      const fBody = 520 + 230 * slow(t + 3.7);                   // 300–750 Hz, wandert langsam
+      const fWhistle = 1350 + 420 * slow(t + 8.1);               // 900–1800 Hz
+      const mid = step(body, x, fBody, 2.4);
+      const high = step(whistle, x, fWhistle, 14) * (0.35 + 0.65 * Math.max(0, g + 0.3));
+
+      const low = step(rumble, x, 230 + 60 * slow(t + 5.2), 1.3);
+      const sample = (low * 0.55 + mid * 1.0 + high * 0.09) * gust;
+      // leichter Hochpass gegen jedes Grollen
+      prevHP = 0.985 * (prevHP + sample - prevIn);
+      prevIn = sample;
+      raw[i] = prevHP;
     }
 
     const buffer = ctx.createBuffer(1, n, sr);
@@ -116,7 +145,7 @@ function buildSynth(ctx) {
       data[i] = r < 1 ? raw[i] * r + raw[n + i] * (1 - r) : raw[i];
       energy += data[i] * data[i];
     }
-    // Rauschen hat sehr hohe Spitzen: nach Lautstärke (RMS) angleichen, Spitzen weich begrenzen
+    // nach Lautstärke (RMS) angleichen, Spitzen weich begrenzen
     const rms = Math.sqrt(energy / n) || 1;
     for (let i = 0; i < n; i++) data[i] = Math.tanh(data[i] / rms * 0.17 * 1.2) / 1.2;
     return buffer;
