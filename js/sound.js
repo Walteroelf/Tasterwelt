@@ -369,12 +369,12 @@ function stopPageSound(release = 0.4) {
 
 /* Lautstärke eines Dauergeräuschs: Grundwert × Eigenart des Klangs × Einstellung.
    Der Wind liegt im Bereich der Sprache und wird deshalb deutlich leiser gemischt. */
-const AMBIENT_SCALE = { "syn-wind": 0.45 };
+const AMBIENT_SCALE = { "syn-wind": 0.3 };
 const AMBIENT_LEVEL = { aus: 0, leise: 0.5, normal: 1, laut: 1.6 };
 
 function ambientVolume(name) {
   const level = AMBIENT_LEVEL[settings.ambient];
-  return 0.3 * (AMBIENT_SCALE[name] || 1) * (level === undefined ? 1 : level);
+  return 0.22 * (AMBIENT_SCALE[name] || 1) * (level === undefined ? 1 : level);
 }
 
 /* Spielt das Geräusch einer Seite; gibt die Dauer in Sekunden zurück (0 bei Hintergrund) */
