@@ -11,6 +11,7 @@
     syn-glocke-1..4  Glöckchen in C-Dur-Pentatonik
     syn-tropfen-1..3 Wassertropfen
     syn-plopp-1..3   Seifenblase platzt
+    syn-wind         Wind, nahtlos als Dauergeräusch
 */
 
 function buildSynth(ctx) {
@@ -86,6 +87,42 @@ function buildSynth(ctx) {
     });
   }
 
+  /* Wind: gefiltertes Rauschen mit ruhigen Böen, nahtlos als Dauergeräusch (12 s).
+     Die Böen haben ganze Perioden, das Rauschen wird am Schleifenende überblendet. */
+  function wind() {
+    const seconds = 12;
+    const n = Math.floor(seconds * sr);
+    const over = Math.floor(0.8 * sr);
+    const raw = new Float32Array(n + over);
+    const k1 = 1 - Math.exp(-PI2 * 450 / sr);
+    const k2 = 1 - Math.exp(-PI2 * 1700 / sr);
+    let a = 0, b = 0, c = 0, d = 0;
+
+    for (let i = 0; i < raw.length; i++) {
+      const x = Math.random() * 2 - 1;
+      a += (x - a) * k1; b += (a - b) * k1;     // tiefes Rauschen
+      c += (x - c) * k2; d += (c - d) * k2;     // höheres Pfeifen
+      const t = i / sr;
+      const gust = 0.55 + 0.25 * Math.sin(PI2 * 3 * t / seconds + 1) + 0.2 * Math.sin(PI2 * 5 * t / seconds + 2);
+      const whistle = 0.5 + 0.5 * Math.sin(PI2 * 2 * t / seconds);
+      raw[i] = (b * 3 + (d - b) * 1.1 * whistle) * gust;
+    }
+
+    const buffer = ctx.createBuffer(1, n, sr);
+    const data = buffer.getChannelData(0);
+    let energy = 0;
+    for (let i = 0; i < n; i++) {
+      const r = i < over ? i / over : 1;
+      data[i] = r < 1 ? raw[i] * r + raw[n + i] * (1 - r) : raw[i];
+      energy += data[i] * data[i];
+    }
+    // Rauschen hat sehr hohe Spitzen: nach Lautstärke (RMS) angleichen, Spitzen weich begrenzen
+    const rms = Math.sqrt(energy / n) || 1;
+    for (let i = 0; i < n; i++) data[i] = Math.tanh(data[i] / rms * 0.17 * 1.2) / 1.2;
+    return buffer;
+  }
+
+  buffers["syn-wind"] = wind();
   buffers["syn-schale"] = bowl(196);
   [523.25, 587.33, 659.25, 783.99].forEach((f, i) => { buffers["syn-glocke-" + (i + 1)] = bell(f); });
   [[700, 1500], [560, 1250], [820, 1700]].forEach(([a, b], i) => {

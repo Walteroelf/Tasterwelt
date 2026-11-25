@@ -43,3 +43,6 @@ const GERAEUSCHE = [
 ];
 
 EFFECT_CLIPS.push(...GERAEUSCHE.map(g => g.id));
+
+/* Berechnete Geräusche (js/klangwerk.js): keine Datei, deshalb nicht in EFFECT_CLIPS */
+GERAEUSCHE.push({ id: "syn-wind", name: "Wind", loop: true });
