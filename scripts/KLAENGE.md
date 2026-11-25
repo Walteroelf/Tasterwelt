@@ -56,3 +56,10 @@ Zusätzlich zu den Paketen `numpy` und `soundfile` wird `av` gebraucht (liest au
 
 Andere Aufnahme gewünscht: Eintrag in `CLIPS` in `scripts/geraeusche.py` ändern (nur gemeinfreie oder CC0-Aufnahmen),
 Name auch in `GERAEUSCHE` in `js/klang.js` eintragen, danach die Versionsnummer erhöhen.
+
+### Sprechstile
+
+In `scripts/stimme.py` steht eine Liste `STYLES`: Für Sätze, die auf ein Muster passen, gelten eigenes Tempo,
+eine eigene Tonhöhe (in Halbtönen) und eine eigene Betonungs-Variation. So sprechen z. B. die Fee höher, die
+Schneekönigin und der Butt tiefer und langsamer. Neue Geschichten: Muster ergänzen, `stimme.py` ausführen,
+Versionsnummer erhöhen. Zusätzlich wird `scipy` gebraucht (`pip install scipy`).
