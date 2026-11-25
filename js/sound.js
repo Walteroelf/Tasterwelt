@@ -361,6 +361,12 @@ function stopPageSound(release = 0.4) {
 
 /* Spielt das Geräusch einer Seite; gibt die Dauer in Sekunden zurück (0 bei Hintergrund) */
 async function startPageSound(page, { preview = false } = {}) {
+  // "Hintergrundgeräusch beenden": Dauergeräusch leise ausblenden
+  if (page && page.sound === "__stop") {
+    if (!preview) stopAmbient(1.2);
+    return 0;
+  }
+
   const buffer = await soundBuffer(page);
   if (!buffer) return 0;
 

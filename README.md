@@ -65,7 +65,7 @@ Ohne Taster: „Bildschirm antippen zählt auch“ ist eingeschaltet – dann is
 
 **Bausteine**
 - **Aufdecken:** Anzahl der Felder (1 bis 16).
-- **Aufbauen:** Drücke bis zum Ereignis (1 bis 15).
+- **Aufbauen:** Drücke bis zum Ereignis (1 bis 15). Beim Domino steht nach dem letzten Stein die Reihe bereit, erst der **nächste** Druck lässt sie fallen.
 - **Halten-Modus:** Feuerwerk, Wellen, Polarlicht, Lavalampe und Musik laufen nur, solange der Taster gedrückt ist (wie ein Spielzeug am PowerLink). Aus: Jeder Druck löst den Effekt einmal aus.
 
 **Zahlen-Code** (Schalter unter „Schutz“, standardmäßig aus) – ist er an, müssen vor den Einstellungen und vor dem Haus-Knopf (Zurück) vier Zahlen eingetippt werden, die als Wörter angezeigt werden („drei – sieben – eins – vier“). So kommen Kinder nicht versehentlich aus der Übung.
@@ -118,7 +118,7 @@ Startseite → **Eigene Inhalte** → **+ Neue Sammlung** (oder ein Beispiel „
 Jede Seite hat:
 - **Foto** – mehrere Fotos auf einmal wählen geht auch, der Dateiname wird zum Text (*Am See.jpg* → „Am See“). Seiten ohne Foto zeigen den Text groß.
 - **Text** – wird vorgelesen
-- **Geräusch** – aus 16 Alltagsgeräuschen (Möwe, Kuh, Schiffshorn, Wellen, Regen, Türklingel …) oder eine eigene Audiodatei; mit „Probe“ anhören. Das Geräusch klingt beim Erscheinen der Seite, danach folgt die Stimme. Mit „läuft im Hintergrund weiter“ bleibt es als Dauergeräusch an, bis eine Seite ein neues Hintergrundgeräusch hat oder die Geschichte endet. Die Vorlagen enthalten schon passende Geräusche.
+- **Geräusch** – aus 16 Alltagsgeräuschen (Möwe, Kuh, Schiffshorn, Wellen, Regen, Türklingel …) oder eine eigene Audiodatei; mit „Probe“ anhören. Das Geräusch klingt beim Erscheinen der Seite, danach folgt die Stimme. Mit „läuft im Hintergrund weiter“ bleibt es als Dauergeräusch an, bis eine Seite ein neues Hintergrundgeräusch oder „Hintergrundgeräusch beenden“ hat oder die Geschichte endet. Die Vorlagen enthalten schon passende Geräusche.
 - **Aufnahme** – eigene Stimme, hat Vorrang vor der Gerätestimme (max. 30 Sekunden)
 - **Video** – in der Geschichte als Seite, beim Aufdecken als Belohnung (gut: kurze Videos von vertrauten Personen)
 

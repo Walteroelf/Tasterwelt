@@ -274,7 +274,7 @@ function soundRow(page) {
 
   const select = document.createElement("select");
   select.setAttribute("aria-label", "Geräusch für Seite");
-  const options = [["", "kein Geräusch"], ...GERAEUSCHE.map(g => [g.id, g.name + (g.loop ? " (Dauer)" : "")])];
+  const options = [["", "kein Geräusch"], ["__stop", "Hintergrundgeräusch beenden"], ...GERAEUSCHE.map(g => [g.id, g.name + (g.loop ? " (Dauer)" : "")])];
   if (page.sfx) options.push(["__own", "Eigene Datei"]);
   options.push(["__upload", "Eigene Datei wählen …"]);
   options.forEach(([value, name]) => {
@@ -299,7 +299,7 @@ function soundRow(page) {
   });
   row.appendChild(select);
 
-  if (page.sound) {
+  if (page.sound && page.sound !== "__stop") {
     row.appendChild(toolButton("Probe", () => { unlockAudio(); startPageSound(page, { preview: true }); }));
 
     const bg = document.createElement("label");
@@ -310,6 +310,13 @@ function soundRow(page) {
     box.addEventListener("change", () => { page.soundBg = box.checked; });
     bg.append(box, " läuft im Hintergrund weiter");
     row.appendChild(bg);
+
+    if (page.soundBg) {
+      const hint = document.createElement("small");
+      hint.className = "hint";
+      hint.textContent = "Läuft, bis eine spätere Seite „Hintergrundgeräusch beenden“ oder ein neues Dauergeräusch hat, oder die Geschichte endet.";
+      row.appendChild(hint);
+    }
   }
   return row;
 }
@@ -512,7 +519,7 @@ importInput.addEventListener("change", async () => {
         audio: await dataUrlToBlob(page.audio),
         video: await dataUrlToBlob(page.video),
         sfx: await dataUrlToBlob(page.sfx),
-        sound: page.sound === "__own" ? (page.sfx ? "__own" : null) : (GERAEUSCHE.some(g => g.id === page.sound) ? page.sound : null),
+        sound: page.sound === "__own" ? (page.sfx ? "__own" : null) : (page.sound === "__stop" || GERAEUSCHE.some(g => g.id === page.sound) ? page.sound : null),
         soundBg: Boolean(page.soundBg),
         kern: Boolean(page.kern)
       })))

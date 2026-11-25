@@ -83,11 +83,13 @@ function createBuildGame(variant) {
   /* ---------- Domino ---------- */
 
   let dominos = [];
+  let readyToFall = false;   // letzter Stein steht – der nächste Druck lässt die Reihe fallen
 
   function setupDomino() {
     svg.innerHTML = `<rect class="c" x="-400" y="250" width="1200" height="3" rx="1.5"/>`;
     dominos = [];
     count = 0;
+    readyToFall = false;
   }
 
   function dominoX(i, total) {
@@ -97,6 +99,13 @@ function createBuildGame(variant) {
   }
 
   function pressDomino() {
+    // Alle Steine stehen: dieser Druck löst das Umfallen aus
+    if (readyToFall) {
+      readyToFall = false;
+      topple();
+      return;
+    }
+
     const total = steps();
     count++;
 
@@ -109,9 +118,12 @@ function createBuildGame(variant) {
     dominos.push(g);
     Sounds.place(count - 1);
 
-    if (count < total) return;
+    // Letzter Stein steht – jetzt wartet die Reihe auf den nächsten Druck
+    if (count >= total) readyToFall = true;
+  }
 
-    // Die Reihe fällt – Stein für Stein
+  /* Die Reihe fällt – Stein für Stein */
+  function topple() {
     busy = true;
     later(() => {
       dominos.forEach((d, i) => {
@@ -121,9 +133,9 @@ function createBuildGame(variant) {
           Sounds.clack();
         }, i * 130);
       });
-    }, 500);
+    }, 150);
 
-    const fallen = 500 + dominos.length * 130;
+    const fallen = 150 + dominos.length * 130;
     later(() => {
       const last = dominos[dominos.length - 1].getBoundingClientRect();
       Fx.burst(last.right, last.bottom, 24, currentTheme().b);
