@@ -160,10 +160,18 @@ function play(name, { start = 0, rate = 1, volume = 1, reverb = 0.3, offset = 0,
   return {
     stop(release = 0.6) {
       const now = ctx.currentTime;
+      // Schleife sofort ausschalten: Selbst wenn das Gerät den Stopp-Befehl nicht umsetzt,
+      // endet die Aufnahme nach dem aktuellen Durchlauf von selbst
+      source.loop = false;
       gain.gain.cancelScheduledValues(now);
       gain.gain.setValueAtTime(Math.max(gain.gain.value, 0.0001), now);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + release);
       try { source.stop(now + release + 0.05); } catch (error) { /* schon beendet */ }
+      // Sicherheitsnetz: nach dem Ausblenden Quelle und Lautstärke hart beenden
+      setTimeout(() => {
+        try { source.stop(); } catch (error) { /* schon beendet */ }
+        try { gain.disconnect(); } catch (error) { /* schon getrennt */ }
+      }, (release + 0.2) * 1000);
     }
   };
 }

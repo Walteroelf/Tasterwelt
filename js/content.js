@@ -130,7 +130,7 @@ const BUILTIN_COLLECTIONS = [
     name: "Ein Tag am Meer",
     pages: builtinPages([
       ["auto", "Wir fahren ans Meer.", "auto"],
-      ["sonne", "Die Sonne scheint.", "voegel", true],
+      ["sonne", "Die Sonne scheint.", "voegel"],
       ["wellen", "Die Wellen rauschen.", "wellen", true],
       ["schiff", "Ein Schiff fährt vorbei.", "schiffshorn"],
       ["moewe", "Eine Möwe fliegt über das Wasser.", "moewe"],
