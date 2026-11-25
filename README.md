@@ -122,6 +122,8 @@ Jede Seite hat:
 - **Aufnahme** – eigene Stimme, hat Vorrang vor der Gerätestimme (max. 30 Sekunden)
 - **Video** – in der Geschichte als Seite, beim Aufdecken als Belohnung (gut: kurze Videos von vertrauten Personen)
 
+**Löschen:** Eigene Sammlungen haben in der Liste einen roten „Löschen“-Knopf (mit Rückfrage). Vorlagen lassen sich nicht löschen.
+
 **Weitergeben:** Sammlung bearbeiten → **Exportieren** → Datei per AirDrop ans andere iPad → dort **Sammlung importieren**.
 
 Fotos, Videos und Aufnahmen bleiben nur auf dem Gerät (im Browser gespeichert). Fotos von Personen bitte nur mit Einverständnis verwenden.

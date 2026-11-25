@@ -194,6 +194,20 @@ function renderOwnList() {
     edit.addEventListener("click", () => openEditor(collection));
     row.appendChild(edit);
 
+    // Eigene Sammlungen lassen sich direkt hier löschen (Vorlagen nicht)
+    if (!collection.builtin) {
+      const remove = document.createElement("button");
+      remove.className = "small danger";
+      remove.textContent = "Löschen";
+      remove.setAttribute("aria-label", "„" + collection.name + "“ löschen");
+      remove.addEventListener("click", async () => {
+        if (!confirm("Sammlung „" + collection.name + "“ wirklich löschen? Das lässt sich nicht rückgängig machen.")) return;
+        await deleteCollection(collection.id);
+        renderHome();
+      });
+      row.appendChild(remove);
+    }
+
     list.appendChild(row);
   });
 }
